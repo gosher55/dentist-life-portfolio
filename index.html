@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dentist Life Portfolio — ออกแบบพอร์ตชีวิต การเงิน ภาษี &amp; การลงทุนทันตแพทย์</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #0b1120;
+      color: #f8fafc;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+    }
+    .pulse-dot {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.18); }
+    }
+    input[type="number"]::-webkit-inner-spin-button {
+      opacity: 0.5;
+    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-teal-500 selection:text-slate-950">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 glass-card border-b border-slate-800/90 px-3 py-2">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-sky-500 flex items-center justify-center text-slate-950 font-bold text-base shadow">
+          📊
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-bold text-sm sm:text-base text-white leading-none">Dentist Life Portfolio</h1>
+            <span id="roomBadge" class="hidden items-center gap-1 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px]">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
+              <span id="roomCodeText" class="font-bold text-amber-300">DENT-2569</span>
+              <span id="roleBadgeText" class="text-sky-300 hidden sm:inline">• นิสิต</span>
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 hidden md:block mt-0.5">ออกแบบพอร์ตชีวิต การเงิน ภาษี 40(1)–(8) กบข./PVD เงินเฟ้อ &amp; วิกฤตเศรษฐกิจ</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button id="btnSwitchModeTop" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition flex items-center gap-1">
+          <span>🖥️</span> <span id="topSwitchLabel">จออาจารย์ (PC)</span>
+        </button>
+        <button id="btnResetToLobby" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 transition">
+          ↺ หน้าแรก
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Instructor Control Strip -->
+  <div id="instructorControlBar" class="hidden bg-gradient-to-r from-amber-950/95 via-slate-900 to-amber-950/95 border-b border-amber-500/40 px-3 py-2 z-30">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-bold text-[11px]">INSTRUCTOR MONITOR</span>
+        <span class="text-xs text-amber-200 hidden sm:inline">ติดตามพอร์ตนิสิตแยกตามหมวด (รายได้ • รายจ่าย • การลงทุน) พร้อมสรุปค่าเฉลี่ยทั้งห้อง</span>
+      </div>
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <div class="flex items-center gap-1 bg-slate-950/90 px-2 py-1 rounded-lg border border-amber-500/40 text-xs">
+          <span class="text-slate-400 text-[11px]">รหัสห้องที่เปิด:</span>
+          <input id="hostRoomInput" type="text" value="DENT-2569" maxlength="12" class="w-24 px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-amber-300 font-bold text-xs uppercase text-center focus:outline-none focus:border-amber-400">
+          <button id="btnSetHostRoom" type="button" class="px-2 py-0.5 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-[11px] transition">ตั้งรหัส</button>
+          <button id="btnCopyRoomLink" type="button" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-sky-300 font-semibold text-[11px] border border-slate-700 transition" title="คัดลอกลิงก์ (?room=...) ไปทำ QR Code">🔗 ลิงก์เข้าห้อง</button>
+          <button id="btnOpenSheetConfig" type="button" class="px-2 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-semibold text-[11px] border border-emerald-500/40 transition" title="เชื่อมต่อ Google Apps Script Web App URL">📊 เชื่อม Google Sheet</button>
+        </div>
+        <button id="btnViewStudentFromHost" type="button" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-600 transition">
+          📱 สลับดูจอนิสิต
+        </button>
+        <button id="btnHostPauseModal" type="button" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow transition">
+          ⏸️ Pause &amp; แทรกการสอน
+        </button>
+        <button id="btnHostSummaryView" type="button" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow transition">
+          📊 สรุปค่าเฉลี่ยทั้งห้องเรียน
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 py-4 flex flex-col">
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: CLASSROOM LOBBY                                               -->
+    <!-- ===================================================================== -->
+    <section id="viewLobby" class="max-w-md w-full mx-auto my-auto space-y-4">
+      <div class="glass-card rounded-2xl p-5 border border-teal-500/30 shadow-2xl space-y-4">
+        <div class="text-center space-y-1.5 border-b border-slate-800 pb-4">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-sky-500 text-slate-950 flex items-center justify-center text-2xl mx-auto shadow-lg">
+            🩺
+          </div>
+          <h2 class="text-lg font-bold text-white">ออกแบบพอร์ตชีวิตทันตแพทย์</h2>
+          <p class="text-xs text-slate-400">ใส่รหัสห้องเรียนเพื่อออกแบบรายได้ รายจ่าย ภาษี และพอร์ตลงทุนของคุณ</p>
+        </div>
+
+
+
+        <div class="space-y-2">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label for="inputRoomCode" class="block text-[11px] text-slate-400 mb-1">รหัสห้องเรียน (รับจากอาจารย์)</label>
+              <input id="inputRoomCode" type="text" value="DENT-2569" maxlength="12" placeholder="เช่น DENT-2569" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-amber-300 font-bold text-xs uppercase text-center focus:outline-none focus:border-teal-400">
+            </div>
+            <div>
+              <label for="inputPlayerName" class="block text-[11px] text-slate-400 mb-1">ชื่อหมอ / รหัสนิสิต</label>
+              <input id="inputPlayerName" type="text" value="ทพ. นภัส (650101)" maxlength="28" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-teal-400">
+            </div>
+          </div>
+          <p id="roomErrorMsg" class="hidden text-xs text-rose-400 font-semibold bg-rose-950/40 border border-rose-500/40 rounded-lg px-3 py-2 text-center"></p>
+        </div>
+
+        <!-- Quick Mockup Preset Selection in Lobby -->
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+          <label class="block text-[11px] font-semibold text-teal-300">🎯 เลือก Mockup ตัวอย่างอาชีพ (ปรับตัวเลขเองได้ต่อ):</label>
+          <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+            <button type="button" data-preset="gov_new" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-sky-500/20 border border-sky-400 text-sky-200 font-bold transition text-left">
+              🏥 จบใหม่ รพ.รัฐ
+            </button>
+            <button type="button" data-preset="gov_5yr" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left">
+              🏥 หมอรัฐ (ทำงาน 5 ปี)
+            </button>
+            <button type="button" data-preset="acad_new" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left">
+              🎓 อาจารย์ ม. (ยังไม่เป็น ผศ.)
+            </button>
+            <button type="button" data-preset="acad_asst" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left">
+              🎓 อาจารย์ ม. (ผศ.)
+            </button>
+            <button type="button" data-preset="priv_gp" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left">
+              💎 เอกชนทั่วไป (GP)
+            </button>
+            <button type="button" data-preset="priv_spec" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left">
+              🦷 เฉพาะทาง (Specialist)
+            </button>
+            <button type="button" data-preset="clinic_owner" class="lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left">
+              🏢 เจ้าของคลินิก
+            </button>
+          </div>
+        </div>
+
+        <button id="btnEnterRoom" type="button" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-400 to-sky-500 hover:from-teal-300 hover:to-sky-400 text-slate-950 font-bold text-sm shadow-lg transition">
+          <span id="enterBtnLabel">🚀 เข้าห้องเรียน &amp; เริ่มออกแบบพอร์ต</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2A: STUDENT MOBILE-FIRST PORTFOLIO DESIGNER                      -->
+    <!-- ===================================================================== -->
+    <section id="viewStudentPortfolio" class="hidden max-w-md w-full mx-auto space-y-3 pb-24">
+
+      <!-- Live Summary Header Strip -->
+      <div class="glass-card rounded-2xl p-3 border border-slate-800 shadow-lg space-y-2">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div>
+            <div id="stuHeaderName" class="text-xs font-bold text-white">ทพ. นภัส (650101)</div>
+            <div id="stuHeaderTrack" class="text-[10px] text-teal-300">ตัวอย่าง: จบใหม่ รพ.รัฐ</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span id="stuHealthScoreBadge" class="px-2 py-0.5 rounded-full bg-teal-500/20 border border-teal-400/40 text-teal-300 text-[10px] font-bold">
+              คะแนนการเงิน 82/100
+            </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-1.5 text-center">
+          <div class="bg-slate-900 rounded-xl p-2 border border-slate-800">
+            <div class="text-[10px] text-slate-400">รายได้/ด.</div>
+            <div id="sumMonthIncome" class="text-xs font-bold text-sky-400 mt-0.5">฿52,000</div>
+          </div>
+          <div class="bg-slate-900 rounded-xl p-2 border border-slate-800">
+            <div class="text-[10px] text-slate-400">ภาษีเฉลี่ย/ด.</div>
+            <div id="sumMonthTax" class="text-xs font-bold text-rose-400 mt-0.5">฿1,500</div>
+          </div>
+          <div class="bg-slate-900 rounded-xl p-2 border border-slate-800">
+            <div class="text-[10px] text-slate-400">รายจ่าย/ด.</div>
+            <div id="sumMonthExpense" class="text-xs font-bold text-amber-300 mt-0.5">฿30,000</div>
+          </div>
+          <div class="bg-slate-900 rounded-xl p-2 border border-slate-800">
+            <div class="text-[10px] text-slate-400">ลงทุนรวม/ด.</div>
+            <div id="sumMonthInvest" class="text-xs font-bold text-emerald-400 mt-0.5">฿20,500</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-Step Portfolio Navigation Tabs -->
+      <div class="grid grid-cols-3 gap-1 p-1 bg-slate-900/95 rounded-xl border border-slate-800">
+        <button id="tabStep1" type="button" class="py-2 rounded-lg text-xs font-bold bg-teal-400 text-slate-950 shadow transition">
+          1. รายได้ &amp; ภาษี
+        </button>
+        <button id="tabStep2" type="button" class="py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
+          2. รายจ่าย &amp; กบข.
+        </button>
+        <button id="tabStep3" type="button" class="py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
+          3. พอร์ตลงทุน &amp; IG
+        </button>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- STEP 1: INCOME (40(1), 40(2), 40(4), 40(6), 40(8), GIFT) + MOCKUPS  -->
+      <!-- =================================================================== -->
+      <div id="panelStep1" class="glass-card rounded-2xl p-4 border border-slate-800 space-y-3">
+        <div>
+          <h2 class="text-sm font-bold text-white">1. โครงสร้างรายได้ &amp; ภาษี (บาท/เดือน)</h2>
+          <p class="text-[11px] text-slate-400">กดปุ่มตัวอย่างด้านล่างเพื่อโหลดตัวเลข Mockup แล้วปรับแก้เองได้อิสระ</p>
+        </div>
+
+        <!-- Horizontal Scrollable Mockup Buttons -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+          <button type="button" data-preset="gov_new" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400 text-sky-200 text-[11px] font-bold">🏥 จบใหม่รัฐ</button>
+          <button type="button" data-preset="gov_5yr" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]">🏥 หมอรัฐ 5 ปี</button>
+          <button type="button" data-preset="acad_new" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]">🎓 อาจารย์ (ยังไม่ ผศ.)</button>
+          <button type="button" data-preset="acad_asst" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]">🎓 อาจารย์ ผศ.</button>
+          <button type="button" data-preset="priv_gp" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]">💎 เอกชน GP</button>
+          <button type="button" data-preset="priv_spec" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]">🦷 เฉพาะทาง</button>
+          <button type="button" data-preset="clinic_owner" class="step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]">🏢 เจ้าของคลินิก</button>
+        </div>
+
+        <div class="space-y-2.5 text-xs">
+          <!-- 40(1) Slider -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-sky-300">40(1) เงินเดือนประจำ</span>
+                <button type="button" data-info="40_1" class="info-btn w-4 h-4 rounded-full bg-sky-500/20 text-sky-300 font-bold text-[10px] flex items-center justify-center border border-sky-500/40">i</button>
+              </div>
+              <span id="lblInc40_1" class="font-bold text-sky-300 text-sm">฿52,000/ด.</span>
+            </div>
+            <input id="inc40_1" type="range" min="0" max="200000" step="1000" value="52000" class="inc-input w-full accent-sky-400 cursor-pointer">
+          </div>
+
+          <!-- 40(2) Slider -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-amber-300">40(2) รับจ้างลงเวร</span>
+                <button type="button" data-info="40_2" class="info-btn w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[10px] flex items-center justify-center border border-amber-500/40">i</button>
+              </div>
+              <span id="lblInc40_2" class="font-bold text-amber-300 text-sm">฿0/ด.</span>
+            </div>
+            <input id="inc40_2" type="range" min="0" max="200000" step="5000" value="0" class="inc-input w-full accent-amber-400 cursor-pointer">
+          </div>
+
+          <!-- 40(6) Slider -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-emerald-300">40(6) วิชาชีพอิสระ (DF คลินิก)</span>
+                <button type="button" data-info="40_6" class="info-btn w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] flex items-center justify-center border border-emerald-500/40">i</button>
+              </div>
+              <span id="lblInc40_6" class="font-bold text-emerald-300 text-sm">฿20,000/ด.</span>
+            </div>
+            <input id="inc40_6" type="range" min="0" max="400000" step="5000" value="20000" class="inc-input w-full accent-emerald-400 cursor-pointer">
+          </div>
+
+          <!-- 40(4) Slider -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-purple-300">40(4) ดอกเบี้ย / ปันผล</span>
+                <button type="button" data-info="40_4" class="info-btn w-4 h-4 rounded-full bg-purple-500/20 text-purple-300 font-bold text-[10px] flex items-center justify-center border border-purple-500/40">i</button>
+              </div>
+              <span id="lblInc40_4" class="font-bold text-purple-300 text-sm">฿0/ด.</span>
+            </div>
+            <input id="inc40_4" type="range" min="0" max="100000" step="1000" value="0" class="inc-input w-full accent-purple-400 cursor-pointer">
+          </div>
+
+          <!-- 40(8) Slider -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-pink-300">40(8) ธุรกิจ / รีวิว / อื่นๆ</span>
+                <button type="button" data-info="40_8" class="info-btn w-4 h-4 rounded-full bg-pink-500/20 text-pink-300 font-bold text-[10px] flex items-center justify-center border border-pink-500/40">i</button>
+              </div>
+              <span id="lblInc40_8" class="font-bold text-pink-300 text-sm">฿0/ด.</span>
+            </div>
+            <input id="inc40_8" type="range" min="0" max="200000" step="5000" value="0" class="inc-input w-full accent-pink-400 cursor-pointer">
+          </div>
+
+          <!-- เงินได้โดยเสน่หา Slider -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-teal-500/30 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-teal-300">🎁 เงินได้โดยเสน่หา</span>
+                <button type="button" data-info="gift" class="info-btn w-4 h-4 rounded-full bg-teal-500/20 text-teal-300 font-bold text-[10px] flex items-center justify-center border border-teal-500/40">i</button>
+              </div>
+              <span id="lblIncGift" class="font-bold text-teal-300 text-sm">฿0/ด.</span>
+            </div>
+            <input id="incGift" type="range" min="0" max="200000" step="5000" value="0" class="inc-input w-full accent-teal-400 cursor-pointer">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+              <span>ผู้ให้:</span>
+              <select id="giftSourceSelect" class="inc-input bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-teal-200 text-[10px]">
+                <option value="parents">พ่อแม่ / คู่สมรส (ยกเว้น 20 ล้าน/ปี)</option>
+                <option value="partner">แฟน (ไม่จดทะเบียน) / อื่นๆ (ยกเว้น 10 ล้าน/ปี)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shock-Effect Tax Summary in Part 1 (Calculated with ONLY 60,000 THB Personal Allowance!) -->
+        <div class="p-3 rounded-xl bg-rose-950/25 border border-rose-500/40 space-y-1 text-xs">
+          <div class="text-[11px] font-bold text-rose-300 mb-1">⚠️ ภาษีเบื้องต้น (คิดแบบมีแค่ค่าลดหย่อนส่วนตัว 60,000 บ. ยังไม่หักประกัน/กบข.)</div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">รายได้รวมทั้งปี:</span>
+            <span id="taxDispGross" class="font-bold text-white">฿864,000</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">หักค่าใช้จ่าย + ลดหย่อนส่วนตัว 60k:</span>
+            <span id="taxDispDeduct" class="font-bold text-emerald-400">-฿304,000</span>
+          </div>
+          <div class="flex justify-between border-t border-rose-500/25 pt-1">
+            <span class="text-amber-300 font-medium">ภาษีครึ่งปี (ภ.ง.ด.94 เดือน ก.ย.):</span>
+            <span id="taxDispPND94" class="font-bold text-amber-300">฿0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-rose-300 font-bold">ภาษีที่ต้องจ่ายทั้งปี (ภ.ง.ด.90):</span>
+            <span id="taxDispAnnual" class="font-bold text-rose-400 text-sm">฿36,500</span>
+          </div>
+        </div>
+
+        <button id="btnGoStep2" type="button" class="w-full py-2.5 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-bold text-xs shadow transition">
+          ถัดไป: จัดการรายจ่าย &amp; กบข./PVD ➔
+        </button>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- STEP 2: PAY YOURSELF FIRST (INSURANCE+GPF -> SURPLUS -> EXPENSES)   -->
+      <!-- =================================================================== -->
+      <div id="panelStep2" class="hidden glass-card rounded-2xl p-4 border border-slate-800 space-y-3">
+        <div class="border-b border-slate-800 pb-2">
+          <h2 class="text-sm font-bold text-white">2. หักออม-ประกันก่อนใช้ &amp; จัดการรายจ่ายประจำ</h2>
+          <p class="text-[11px] text-slate-400">ลากแถบเลื่อนเพื่อปรับตัวเลขได้สะดวกบนมือถือ</p>
+        </div>
+
+        <!-- 1. TOP BOX: Insurance & GPF/PVD % Selector (Deducted First!) -->
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-sky-500/30 space-y-2.5 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sky-300 text-[11px]">🛡️ 1. หักประกัน &amp; กบข./PVD ก่อนใช้ (ช่วยลดหย่อนภาษี!)</span>
+            <button type="button" data-info="ins_gpf" class="info-btn w-4 h-4 rounded-full bg-sky-500/20 text-sky-300 font-bold text-[10px] flex items-center justify-center border border-sky-500/40">i</button>
+          </div>
+
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between text-[11px] mb-0.5">
+                <span class="text-slate-300">ประกันชีวิต + สุขภาพ (ลดหย่อนภาษี)</span>
+                <strong id="lblExpInsLife" class="text-sky-300">฿3,000/ด.</strong>
+              </div>
+              <input id="expInsuranceLife" type="range" min="0" max="25000" step="500" value="3000" class="exp-input w-full accent-sky-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px] mb-0.5">
+                <span class="text-slate-300">ประกันทุพพลภาพ / วิชาชีพหมอฟัน</span>
+                <strong id="lblExpInsProf" class="text-sky-300">฿500/ด.</strong>
+              </div>
+              <input id="expInsuranceProf" type="range" min="0" max="10000" step="500" value="500" class="exp-input w-full accent-sky-400 cursor-pointer">
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-semibold text-emerald-300">กองทุน (หักก่อนจาก 40(1)):</span>
+              <select id="fundTypeSelect" class="exp-input bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-emerald-300 font-semibold">
+                <option value="gpf">กบข. ข้าราชการ (2% – 27%)</option>
+                <option value="pvd">PVD เอกชน/มหาลัย (2% – 15%)</option>
+                <option value="none">ไม่มี กบข./PVD (0%)</option>
+              </select>
+            </div>
+
+            <div id="fundSliderWrap">
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="text-slate-300">อัตราหักสะสม: <strong id="lblFundPct" class="text-emerald-300">5%</strong></span>
+                <span id="lblFundBaht" class="font-bold text-emerald-400">฿2,600 / เดือน</span>
+              </div>
+              <input id="fundPctSlider" type="range" min="2" max="27" step="1" value="5" class="exp-input w-full accent-emerald-400 cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Tax Saved Feedback Pill -->
+          <div id="taxSavedFeedback" class="text-[11px] text-emerald-300 bg-emerald-950/40 border border-emerald-500/30 rounded-lg px-2.5 py-1.5 flex justify-between">
+            <span>ภาษีจริงหลังลดหย่อน: <strong id="lblTaxAfterDeduct">฿1,500/ด.</strong></span>
+            <span id="lblTaxSavedAnnual">ประหยัดภาษี +฿0/ปี</span>
+          </div>
+        </div>
+
+        <!-- 2. MIDDLE BOX: Cash Flow Investable Surplus (EXCLUDING GPF/PVD!) + (i) Formula -->
+        <div id="cashFlowAlertBox" class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 space-y-1 text-xs">
+          <div class="flex items-center justify-between font-bold">
+            <div class="flex items-center gap-1.5">
+              <span class="text-emerald-300">เงินเหลือจากเงินเดือนไว้ลงทุนต่อ:</span>
+              <button type="button" data-info="pay_yourself_first" class="info-btn w-4 h-4 rounded-full bg-emerald-500/25 text-emerald-300 font-bold text-[10px] flex items-center justify-center border border-emerald-400/50">i</button>
+            </div>
+            <span id="dispInvestableMonthly" class="text-emerald-300 text-sm">฿22,900</span>
+          </div>
+          <p id="cashFlowHint" class="text-[11px] text-slate-300"></p>
+        </div>
+
+        <!-- 3. BOTTOM BOX: Detailed Living Expenses (Mobile Sliders) -->
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2.5 text-xs">
+          <div class="font-bold text-amber-300 text-[11px]">🏠 2. รายจ่ายประจำ &amp; ไลฟ์สไตล์ (ลากปรับตามจริง)</div>
+
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between text-[11px]"><span>ค่าเช่า / ผ่อนบ้าน</span><strong id="lblExpRentHouse" class="text-white">฿10,000/ด.</strong></div>
+              <input id="expRentHouse" type="range" min="0" max="80000" step="1000" value="10000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>ค่าผ่อนรถ / ซ่อมบำรุงรถ</span><strong id="lblExpCarLoan" class="text-white">฿6,000/ด.</strong></div>
+              <input id="expCarLoan" type="range" min="0" max="50000" step="1000" value="6000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>ค่าน้ำมัน / ทางด่วน / เดินทาง</span><strong id="lblExpFuelTravel" class="text-white">฿4,000/ด.</strong></div>
+              <input id="expFuelTravel" type="range" min="0" max="20000" step="500" value="4000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>ค่ากินอยู่ / ของใช้ในบ้าน</span><strong id="lblExpFood" class="text-white">฿9,000/ด.</strong></div>
+              <input id="expFood" type="range" min="2000" max="40000" step="500" value="9000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>ไลฟ์สไตล์ (กาแฟ/ฟิตเนส/ช้อป)</span><strong id="lblExpLifestyle" class="text-white">฿4,000/ด.</strong></div>
+              <input id="expLifestyle" type="range" min="0" max="40000" step="500" value="4000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>งบท่องเที่ยว (เฉลี่ยต่อเดือน)</span><strong id="lblExpVacation" class="text-white">฿3,000/ด.</strong></div>
+              <input id="expVacation" type="range" min="0" max="40000" step="500" value="3000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>ให้พ่อแม่ / ผ่อนหนี้ทุน</span><strong id="lblExpParents" class="text-white">฿5,000/ด.</strong></div>
+              <input id="expParents" type="range" min="0" max="50000" step="500" value="5000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[11px]"><span>อื่นๆ (อบรม/สัตว์เลี้ยง/เน็ต)</span><strong id="lblExpOther" class="text-white">฿2,000/ด.</strong></div>
+              <input id="expOther" type="range" min="0" max="20000" step="500" value="2000" class="exp-input w-full accent-amber-400 cursor-pointer">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnBackStep1" type="button" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition">
+            ← กลับหมวดรายได้
+          </button>
+          <button id="btnGoStep3" type="button" class="py-2.5 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-bold text-xs shadow transition">
+            ถัดไป: จัดพอร์ตลงทุน ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- STEP 3: FULL INVESTMENT PORTFOLIO + RETURN/INFLATION/CRASH + IG PNG -->
+      <!-- =================================================================== -->
+      <div id="panelStep3" class="hidden glass-card rounded-2xl p-4 border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div>
+            <h2 class="text-sm font-bold text-white">3. จัดสรรพอร์ตการลงทุน (รวม 100%)</h2>
+            <p class="text-[11px] text-slate-400">งบลงทุนต่อเดือน: <strong id="invBudgetLabel" class="text-emerald-400">฿25,500/ด.</strong></p>
+          </div>
+          <span id="invTotalPctBadge" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/40">100%</span>
+        </div>
+
+        <!-- Categorized Asset Classes (Mobile Sliders) -->
+        <div class="space-y-2 text-xs max-h-72 overflow-y-auto pr-1">
+          <!-- Group A -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="text-[11px] font-bold text-sky-300">🛡️ 1. สภาพคล่อง &amp; ตราสารหนี้</div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>เงินสำรองฉุกเฉิน</span><strong id="lblAllocEmergency" class="text-sky-300">15%</strong></div>
+              <input id="allocEmergency" type="range" min="0" max="100" step="5" value="15" class="alloc-input w-full accent-sky-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>ตราสารหนี้ / หุ้นกู้</span><strong id="lblAllocBond" class="text-sky-300">10%</strong></div>
+              <input id="allocBond" type="range" min="0" max="100" step="5" value="10" class="alloc-input w-full accent-sky-400 cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Group B -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="text-[11px] font-bold text-amber-300">🇹🇭 2. หุ้นไทย, กองทุนไทย &amp; ลดหย่อนภาษี</div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>หุ้นสามัญไทย / ปันผล</span><strong id="lblAllocThaiStock" class="text-amber-300">10%</strong></div>
+              <input id="allocThaiStock" type="range" min="0" max="100" step="5" value="10" class="alloc-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>กองทุนรวมไทย</span><strong id="lblAllocThaiFund" class="text-amber-300">5%</strong></div>
+              <input id="allocThaiFund" type="range" min="0" max="100" step="5" value="5" class="alloc-input w-full accent-amber-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>กองทุน RMF</span><strong id="lblAllocRMF" class="text-emerald-300">10%</strong></div>
+              <input id="allocRMF" type="range" min="0" max="100" step="5" value="10" class="alloc-input w-full accent-emerald-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>กองทุน ThaiESG</span><strong id="lblAllocThaiESG" class="text-emerald-300">5%</strong></div>
+              <input id="allocThaiESG" type="range" min="0" max="100" step="5" value="5" class="alloc-input w-full accent-emerald-400 cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Group C -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="text-[11px] font-bold text-emerald-300">🌍 3. ตลาดต่างประเทศ (Global Equity)</div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>หุ้นต่างประเทศ (US/Tech)</span><strong id="lblAllocGlobalStock" class="text-emerald-300">10%</strong></div>
+              <input id="allocGlobalStock" type="range" min="0" max="100" step="5" value="10" class="alloc-input w-full accent-emerald-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>กองทุนรวมต่างประเทศ</span><strong id="lblAllocGlobalFund" class="text-emerald-300">10%</strong></div>
+              <input id="allocGlobalFund" type="range" min="0" max="100" step="5" value="10" class="alloc-input w-full accent-emerald-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>ETF โลก / S&amp;P500</span><strong id="lblAllocETF" class="text-emerald-300">15%</strong></div>
+              <input id="allocETF" type="range" min="0" max="100" step="5" value="15" class="alloc-input w-full accent-emerald-400 cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Group D -->
+          <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div class="text-[11px] font-bold text-purple-300">✨ 4. สินทรัพย์ทางเลือก &amp; อื่นๆ</div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>ทองคำ</span><strong id="lblAllocGold" class="text-purple-300">5%</strong></div>
+              <input id="allocGold" type="range" min="0" max="100" step="5" value="5" class="alloc-input w-full accent-purple-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>คริปโทเคอร์เรนซี</span><strong id="lblAllocCrypto" class="text-purple-300">5%</strong></div>
+              <input id="allocCrypto" type="range" min="0" max="100" step="5" value="5" class="alloc-input w-full accent-purple-400 cursor-pointer">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px]"><span>ของสะสม / อื่นๆ</span><strong id="lblAllocCollect" class="text-purple-300">0%</strong></div>
+              <input id="allocCollect" type="range" min="0" max="100" step="5" value="0" class="alloc-input w-full accent-purple-400 cursor-pointer">
+            </div>
+          </div>
+        </div>
+
+        <!-- Economic Simulator Controls: Custom Return (-20% to +30%), Inflation, Recession Window -->
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5 text-xs">
+          <div class="font-bold text-amber-300 text-[11px]">⚙️ ตั้งค่าสมมติฐานเศรษฐกิจ (ผลตอบแทน / เงินเฟ้อ / ช่วงเศรษฐกิจแย่)</div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <div class="flex justify-between text-[10px] mb-0.5">
+                <span class="text-slate-300">ผลตอบแทนเฉลี่ย/ปี:</span>
+                <strong id="lblCustomReturn" class="text-teal-300">7.0%</strong>
+              </div>
+              <input id="simReturnRate" type="range" min="-15" max="25" step="0.5" value="7" class="sim-param w-full accent-teal-400">
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] mb-0.5">
+                <span class="text-slate-300">อัตราเงินเฟ้อ/ปี:</span>
+                <strong id="lblInflation" class="text-rose-300">3.0%</strong>
+              </div>
+              <input id="simInflationRate" type="range" min="0" max="10" step="0.5" value="3" class="sim-param w-full accent-rose-400">
+            </div>
+          </div>
+
+          <!-- Recession / Crash Window -->
+          <div class="p-2 rounded-lg bg-rose-950/25 border border-rose-500/30 space-y-1.5">
+            <label class="flex items-center gap-2 text-[11px] font-semibold text-rose-300 cursor-pointer">
+              <input id="chkRecession" type="checkbox" checked class="sim-param accent-rose-500 rounded">
+              <span>📉 จำลองช่วงเศรษฐกิจตกต่ำ (Recession / ตลาดหุ้นร่วง)</span>
+            </label>
+            <div id="recessionControls" class="grid grid-cols-3 gap-1.5 text-[10px]">
+              <div>
+                <span class="text-slate-400 block">ตั้งแต่อายุ</span>
+                <input id="recStartAge" type="number" min="25" max="58" value="35" class="sim-param w-full px-1.5 py-1 rounded bg-slate-900 border border-slate-700 text-white font-bold">
+              </div>
+              <div>
+                <span class="text-slate-400 block">ถึงอายุ</span>
+                <input id="recEndAge" type="number" min="26" max="60" value="37" class="sim-param w-full px-1.5 py-1 rounded bg-slate-900 border border-slate-700 text-white font-bold">
+              </div>
+              <div>
+                <span class="text-slate-400 block">ผลตอบแทนช่วงนี้</span>
+                <input id="recReturnPct" type="number" min="-60" max="0" step="5" value="-20" class="sim-param w-full px-1.5 py-1 rounded bg-slate-900 border border-slate-700 text-rose-400 font-bold">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projection Chart (Nominal vs Inflation-Adjusted Real Value) -->
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-300">วัย 60 (ตัวเลข): <strong id="dispAge60Nominal" class="text-emerald-400">฿28.5M</strong></span>
+            <span class="text-slate-300">มูลค่าจริงหลังเงินเฟ้อ: <strong id="dispAge60Real" class="text-amber-300">฿10.2M</strong></span>
+          </div>
+          <div class="relative h-40 w-full">
+            <canvas id="studentProjectionChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Action Buttons: Download IG Card + Submit to Classroom -->
+        <div class="space-y-2">
+          <button id="btnDownloadIGCard" type="button" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-400 hover:to-indigo-400 text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
+            <span>📸</span> <span>ดาวน์โหลดการ์ดสรุปพอร์ต (IG 4:5 Portrait)</span>
+          </button>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btnBackStep2" type="button" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition">
+              ← กลับหมวดรายจ่าย
+            </button>
+            <button id="btnSubmitPortfolio" type="button" class="py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-500 text-slate-950 font-bold text-xs shadow-lg transition">
+              📤 ส่งพอร์ตเข้าห้องเรียน
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2B: PC INSTRUCTOR MONITOR DASHBOARD                              -->
+    <!-- ===================================================================== -->
+    <section id="viewInstructorDashboard" class="hidden space-y-5">
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-sky-400">
+          <div class="text-xs text-slate-400">ค่าเฉลี่ยรายได้ต่อเดือน (ทั้งห้อง)</div>
+          <div id="avgClassIncome" class="text-xl font-bold text-sky-300 mt-1">฿88,500</div>
+          <div id="avgClassIncomeMix" class="text-[11px] text-slate-400 mt-0.5">40(1) • 40(6) • 40(2)</div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-amber-400">
+          <div class="text-xs text-slate-400">ค่าเฉลี่ยรายจ่าย &amp; อัตราการออม</div>
+          <div id="avgClassExpense" class="text-xl font-bold text-amber-300 mt-1">฿48,200</div>
+          <div id="avgClassSavingsRate" class="text-[11px] text-emerald-400 mt-0.5">ออมลงทุนเฉลี่ย 38%</div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-emerald-400">
+          <div class="text-xs text-slate-400">สินทรัพย์ลงทุนยอดนิยม</div>
+          <div id="avgClassTopAsset" class="text-xl font-bold text-emerald-400 mt-1">Global/ETF</div>
+          <div id="avgClassAge60" class="text-[11px] text-slate-400 mt-0.5">คาดการณ์หลังเงินเฟ้อวัย 60</div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-rose-500">
+          <div class="text-xs text-slate-400">🚨 กลุ่มเสี่ยงที่พบในห้อง</div>
+          <div id="avgClassRiskCount" class="text-xl font-bold text-rose-400 mt-1">3 คน</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Cash Flow ตึง / ไร้ประกัน / 40(2)</div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 border border-slate-800 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <button type="button" data-htab="summary" class="host-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-400 text-slate-950 transition">
+              📊 สรุปค่าเฉลี่ยทั้งห้อง
+            </button>
+            <button type="button" data-htab="income" class="host-tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">
+              💵 หมวด 1: รายได้ &amp; ภาษี
+            </button>
+            <button type="button" data-htab="expense" class="host-tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">
+              🏠 หมวด 2: รายจ่าย &amp; กบข./PVD
+            </button>
+            <button type="button" data-htab="invest" class="host-tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">
+              📈 หมวด 3: พอร์ตการลงทุน
+            </button>
+          </div>
+          <span class="text-xs text-slate-400">นิสิตในห้อง (รับสูงสุด 75 คน): <strong id="submittedCountText" class="text-teal-300">9 / 75 คน</strong></span>
+        </div>
+
+        <!-- SUB-PANEL A: CLASSROOM AVERAGES CHARTS -->
+        <div id="hostPanelSummary" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-sky-300">1. สัดส่วนประเภทเงินได้เฉลี่ยทั้งห้อง</h3>
+            <div class="relative h-52">
+              <canvas id="chartClassIncome"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-amber-300">2. การจัดสรรรายจ่าย vs ประกัน/กบข. เฉลี่ย</h3>
+            <div class="relative h-52">
+              <canvas id="chartClassExpense"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-emerald-300">3. สัดส่วนพอร์ตลงทุนเฉลี่ยทั้งห้อง</h3>
+            <div class="relative h-52">
+              <canvas id="chartClassInvest"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-PANEL B: STUDENT TABLE BY CATEGORY -->
+        <div id="hostPanelTable" class="hidden overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr id="hostTableHeadRow" class="border-b border-slate-700 text-slate-400"></tr>
+            </thead>
+            <tbody id="hostTableBody" class="divide-y divide-slate-800/80 text-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Student Detail Inspector -->
+      <div class="glass-card rounded-2xl p-4 border border-sky-500/40 flex flex-wrap items-center justify-between gap-3">
+        <div class="space-y-1 max-w-3xl">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 text-xs font-bold">🔍 เจาะลึกพอร์ตนิสิต</span>
+            <h4 id="inspTitle" class="text-sm font-bold text-white">เลือกนิสิตจากแท็บหมวด 1 / 2 / 3 เพื่อแสดงตัวอย่างขึ้นจอ</h4>
+          </div>
+          <p id="inspDesc" class="text-xs text-slate-300">คลิกที่ชื่อนิสิตในตารางแต่ละหมวดเพื่อวิเคราะห์จุดแข็ง-จุดเสี่ยงทางภาษีและการลงทุน</p>
+        </div>
+        <button id="btnInspPause" type="button" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow transition">
+          ⏸️ Pause ขึ้นจอสอนแทรก
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: (i) INFO POPOVER -->
+  <div id="modalInfoBox" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3">
+    <div class="max-w-md w-full glass-card rounded-2xl p-5 border border-sky-500/40 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 id="infoModalTitle" class="text-sm font-bold text-sky-300">คำอธิบาย</h3>
+        <button id="btnCloseInfoModal" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold">✕ ปิด</button>
+      </div>
+      <div id="infoModalBody" class="text-xs text-slate-200 leading-relaxed space-y-2"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: INSTAGRAM CARD PREVIEW & DOWNLOAD -->
+  <div id="modalIGPreview" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3">
+    <div class="max-w-sm w-full glass-card rounded-2xl p-4 border border-pink-500/40 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="text-sm font-bold text-white">📸 การ์ดสรุปพอร์ตชีวิต (พร้อมแชร์ IG)</h3>
+        <button id="btnCloseIGModal" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold">✕ ปิด</button>
+      </div>
+      <div class="rounded-xl overflow-hidden border border-slate-700 bg-slate-950 flex justify-center">
+        <img id="igPreviewImg" alt="Instagram Portfolio Card" class="w-full max-h-[60vh] object-contain">
+      </div>
+      <a id="igDownloadLink" download="dentist_life_portfolio_ig.png" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold text-xs text-center shadow-lg transition cursor-pointer">
+        ⬇️ บันทึกรูปภาพ PNG (1080×1350)
+      </a>
+    </div>
+  </div>
+
+  <!-- MODAL: INSTRUCTOR PAUSE & TEACH -->
+  <div id="modalHostPause" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3">
+    <div class="max-w-lg w-full glass-card rounded-2xl p-5 border border-amber-400/50 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold">⏸️</span>
+          <div>
+            <div class="text-[10px] font-bold text-amber-400 uppercase">CLASSROOM PAUSED</div>
+            <h3 class="text-sm font-bold text-white">ช่วงอาจารย์แทรกการสอน</h3>
+          </div>
+        </div>
+        <button id="btnClosePauseModal" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold">✕ ปิด</button>
+      </div>
+      <textarea id="hostPauseNoteInput" rows="3" class="w-full rounded-xl bg-slate-900 border border-slate-700 p-3 text-xs text-white focus:outline-none focus:border-amber-400" placeholder="พิมพ์ประเด็นชวนคิดหรือเปรียบเทียบพอร์ตของนิสิตที่ต้องการบรรยายแทรกตรงนี้..."></textarea>
+      <button id="btnResumeFromPause" type="button" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow transition">
+        ▶️ กลับสู่หน้าจอมอนิเตอร์
+      </button>
+    </div>
+  </div>
+
+
+  <!-- MODAL: INSTRUCTOR PIN LOCK (PIN: 7263) -->
+  <div id="modalInstructorPin" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3">
+    <div class="max-w-xs w-full glass-card rounded-2xl p-5 border border-amber-400/50 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/50 text-amber-300 flex items-center justify-center font-bold">🔐</span>
+          <div>
+            <div class="text-[10px] font-bold text-amber-400 uppercase">INSTRUCTOR ACCESS</div>
+            <h3 class="text-sm font-bold text-white">กรุณาใส่รหัส PIN จออาจารย์</h3>
+          </div>
+        </div>
+        <button id="btnClosePinModal" type="button" class="px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white text-xs font-bold">✕</button>
+      </div>
+
+      <div class="space-y-2">
+        <input id="inputInstructorPin" type="password" inputmode="numeric" maxlength="6" placeholder="ใส่รหัส PIN 4 หลัก" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-center text-lg font-bold tracking-[0.4em] text-amber-300 focus:outline-none focus:border-amber-400">
+        <p id="pinErrorMsg" class="hidden text-xs text-rose-400 font-semibold text-center">❌ รหัส PIN ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button id="btnCancelPin" type="button" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition">
+          ยกเลิก
+        </button>
+        <button id="btnConfirmPin" type="button" class="py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold shadow transition">
+          🔓 เข้าสู่จออาจารย์
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL: GOOGLE APPS SCRIPT WEB APP URL CONFIG -->
+  <div id="modalSheetConfig" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3">
+    <div class="max-w-md w-full glass-card rounded-2xl p-5 border border-emerald-500/40 shadow-2xl space-y-3.5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="text-sm font-bold text-emerald-300">📊 เชื่อมต่อ Google Sheets + Apps Script</h3>
+        <button id="btnCloseSheetConfig" type="button" class="px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white text-xs font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        วาง <strong>Web App URL</strong> ที่ได้จากการ Deploy ไฟล์ <code class="text-amber-300">Code.gs</code> ใน Google Apps Script ลงด้านล่าง (รองรับนิสิตสูงสุด <strong>75 คน/ห้อง</strong> แบบ Real-time)
+      </p>
+      <input id="inputAppsScriptUrl" type="url" placeholder="https://script.google.com/macros/s/...../exec" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-emerald-300 focus:outline-none focus:border-emerald-400">
+      <div id="sheetSyncStatusText" class="text-[11px] text-slate-400">สถานะ: โหมดทดสอบออฟไลน์ (ยังไม่ได้ใส่ URL)</div>
+      <div class="grid grid-cols-2 gap-2">
+        <button id="btnClearSheetUrl" type="button" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700">
+          ใช้โหมดทดสอบ
+        </button>
+        <button id="btnSaveSheetUrl" type="button" class="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow">
+          💾 บันทึก &amp; ซิงค์ทันที
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // INFO (i) DICTIONARY
+    // =========================================================================
+    const INFO_CONTENT = {
+      '40_1': {
+        title: 'มาตรา 40(1) — เงินเดือน & ค่าจ้างแรงงานประจำ',
+        body: '<p><strong>คืออะไร:</strong> เงินเดือนประจำจาก รพ.รัฐ, อาจารย์มหาวิทยาลัย, ค่า พ.ต.ส., ค่าไม่ทำเวชปฏิบัติ</p><p><strong>การหักภาษี:</strong> หักค่าใช้จ่ายได้ 50% แต่รวมกับ 40(2) แล้ว<strong>ไม่เกิน 100,000 บาท/ปี</strong></p>'
+      },
+      '40_2': {
+        title: 'มาตรา 40(2) — รับทำงานให้ (มือปืนรับจ้างรายวัน)',
+        body: '<p><strong>คืออะไร:</strong> ค่าประกันเวรหรือส่วนแบ่ง DF ที่คลินิกไม่ได้ทำสัญญาขอใช้สถานที่ประกอบโรคศิลปะ</p><p><strong>ข้อควรระวัง:</strong> หักค่าใช้จ่ายรวมกับ 40(1) ได้ไม่เกิน 100,000 บาท/ปี จึงเสียภาษีสูงหากมีเงินเดือนประจำอยู่แล้ว</p>'
+      },
+      '40_6': {
+        title: 'มาตรา 40(6) — วิชาชีพอิสระ (การประกอบโรคศิลปะ)',
+        body: '<p><strong>คืออะไร:</strong> รายได้จากการเปิดคลินิกเอง หรือทำสัญญาขอใช้สถานที่แบ่งรายได้ (DF) อย่างถูกต้องตามคำสั่ง ป.132/2546</p><p><strong>จุดเด่น:</strong> หักค่าใช้จ่ายเหมาได้ถึง <strong>60%</strong> และต้องยื่น <strong>ภ.ง.ด.94</strong> ครึ่งปีภายในเดือน ก.ย. หากรายได้ ม.ค.–มิ.ย. เกิน 60,000 บาท</p>'
+      },
+      '40_4': {
+        title: 'มาตรา 40(4) — ดอกเบี้ยและเงินปันผล',
+        body: '<p><strong>คืออะไร:</strong> ดอกเบี้ยเงินฝาก/หุ้นกู้ และเงินปันผลจากหุ้นหรือกองทุนรวม</p><p><strong>ภาษี:</strong> ถูกหัก ณ ที่จ่าย 10% (ปันผล) หรือ 15% (ดอกเบี้ย) สามารถเลือก Final Tax ไม่ต้องนำมารวมคำนวณปลายปีได้</p>'
+      },
+      '40_8': {
+        title: 'มาตรา 40(8) — ธุรกิจ พาณิชย์ และอื่นๆ',
+        body: '<p><strong>คืออะไร:</strong> รายได้จากเพจรีวิวสินค้า, ขายผลิตภัณฑ์ช่องปากออนไลน์, หรือธุรกิจคลินิกเชิงพาณิชย์</p><p><strong>ภาษี:</strong> ต้องยื่นทั้งครึ่งปี (ภ.ง.ด.94) และปลายปี (ภ.ง.ด.90)</p>'
+      },
+      'gift': {
+        title: 'เงินได้โดยเสน่หา (พ่อแม่ให้ / แฟนให้)',
+        body: '<p><strong>คืออะไร:</strong> เงินให้เปล่าจากความรักความผูกพัน เช่น พ่อแม่โอนให้ใช้จ่าย หรือแฟนโอนให้</p><p><strong>เกณฑ์ยกเว้นภาษี (ประมวลรัษฎากร):</strong></p><ul class="list-disc pl-4 space-y-1"><li><strong>พ่อแม่ / ปู่ย่าตายาย / ลูก / คู่สมรสจดทะเบียน:</strong> ได้รับยกเว้นภาษีสูงสุด <strong>20 ล้านบาท/ปี</strong></li><li><strong>แฟน (ไม่จดทะเบียน) / เพื่อน / ผู้อื่น:</strong> ได้รับยกเว้นภาษีสูงสุด <strong>10 ล้านบาท/ปี</strong> (ส่วนที่เกินเสียภาษี 5%)</li></ul>'
+      },
+      'pay_yourself_first': {
+        title: 'สมการการเงินที่ถูกต้อง: Pay Yourself First!',
+        body: '<p><strong>สมการที่คนส่วนใหญ่มักทำ (ผิด):</strong><br>รายได้ - รายจ่าย = เงินออม (มักไม่เหลือให้ออม!)</p><p><strong>สมการการเงินที่ถูกต้อง:</strong><br><span class="text-emerald-300 font-bold">รายได้สุทธิ - เงินออม/กบข./ประกัน = รายจ่ายที่ใช้ได้จริง</span></p><p>เงิน กบข./PVD ถูกหักเก็บไว้ให้คุณก่อนแล้ว ส่วนตัวเลขสีเขียวด้านบนคือ <strong>เงินคงเหลือจากเงินเดือนหลังจากหักภาษี ประกัน กบข. และรายจ่ายทั้งหมด</strong> ที่คุณสามารถนำไปลงทุนต่อในพอร์ตขั้นตอนที่ 3 ได้!</p>'
+      },
+      'ins_gpf': {
+        title: 'ประกัน & กบข. / PVD (% จาก 40(1))',
+        body: '<p><strong>ประกันชีวิต + สุขภาพ:</strong> ลดหย่อนรวมกันสูงสุด 100,000 บ./ปี (เฉพาะสุขภาพตัวเองไม่เกิน 25,000 บ.)</p><p><strong>กบข. (ข้าราชการ):</strong> หักสะสมได้ตั้งแต่ 3% สูงสุดถึง 27% (รวมฐาน 3% เป็น 30%) ของเงินเดือน 40(1)</p><p><strong>PVD (เอกชน/มหาลัย):</strong> หักสะสมได้ 2% – 15% ของเงินเดือน 40(1)</p>'
+      }
+    };
+
+    // =========================================================================
+    // 6 MOCKUP PRESETS (Adjustable after selecting!)
+    // =========================================================================
+    const PRESETS = {
+      gov_new: { label: 'จบใหม่ รพ.รัฐ', inc40_1: 52000, inc40_2: 0, inc40_6: 20000, inc40_4: 0, inc40_8: 0, incGift: 0, fundType: 'gpf', fundPct: 5 },
+      gov_5yr: { label: 'หมอ รพ.รัฐ (ทำงาน 5 ปี)', inc40_1: 68000, inc40_2: 0, inc40_6: 45000, inc40_4: 2000, inc40_8: 0, incGift: 0, fundType: 'gpf', fundPct: 12 },
+      acad_new: { label: 'อาจารย์ ม. (ยังไม่เป็น ผศ.)', inc40_1: 35000, inc40_2: 0, inc40_6: 15000, inc40_4: 0, inc40_8: 0, incGift: 0, fundType: 'pvd', fundPct: 5 },
+      acad_asst: { label: 'อาจารย์ ม. (ผศ.)', inc40_1: 58000, inc40_2: 0, inc40_6: 35000, inc40_4: 1500, inc40_8: 5000, incGift: 0, fundType: 'pvd', fundPct: 10 },
+      priv_gp: { label: 'ทันตแพทย์เอกชนทั่วไป (GP)', inc40_1: 0, inc40_2: 35000, inc40_6: 85000, inc40_4: 1000, inc40_8: 0, incGift: 0, fundType: 'none', fundPct: 0 },
+      priv_spec: { label: 'ทันตแพทย์เฉพาะทาง (Specialist)', inc40_1: 0, inc40_2: 0, inc40_6: 180000, inc40_4: 5000, inc40_8: 0, incGift: 0, fundType: 'none', fundPct: 0 },
+      clinic_owner: { label: 'เจ้าของคลินิก (Clinic Owner)', inc40_1: 60000, inc40_2: 0, inc40_6: 150000, inc40_4: 25000, inc40_8: 40000, incGift: 0, fundType: 'pvd', fundPct: 15 }
+    };
+
+    let state = {
+      role: 'student',
+      roomCode: 'DENT-2569',
+      playerName: 'ทพ. นภัส (650101)',
+      presetKey: 'gov_new',
+      submitted: false,
+      activeHostTab: 'summary',
+      mIncome: 72000,
+      mGift: 0,
+      mTax: 1500,
+      mLivingExp: 43000,
+      mInsExp: 3500,
+      mFundExp: 2600,
+      mInvestable: 24000,
+      savingsRatePct: 33,
+      score: 82,
+      age60Nominal: 25000000,
+      age60Real: 9500000,
+      alloc: {
+        emergency: 15, bond: 10,
+        thaiStock: 10, thaiFund: 5, rmf: 10, thaiEsg: 5,
+        globalStock: 10, globalFund: 10, etf: 15,
+        gold: 5, crypto: 5, collect: 0
+      }
+    };
+
+    const CLASS_PEERS = [
+      { name: 'ทพญ. พิมพ์ดาว', track: 'เฉพาะทาง', m40_1: 0, m40_2: 0, m40_6: 165000, m40_4: 4000, m40_8: 0, expLiving: 58000, expIns: 6000, expRetire: 15000, safe: 20, thai: 25, global: 45, alt: 10 },
+      { name: 'ทพ. กิตติ', track: 'เอกชน GP', m40_1: 0, m40_2: 95000, m40_6: 0, m40_4: 0, m40_8: 0, expLiving: 75000, expIns: 0, expRetire: 0, safe: 60, thai: 20, global: 10, alt: 10 },
+      { name: 'ทพ. ธนดล', track: 'หมอรัฐ 5 ปี', m40_1: 68000, m40_2: 0, m40_6: 45000, m40_4: 2000, m40_8: 0, expLiving: 42000, expIns: 4000, expRetire: 10200, safe: 25, thai: 30, global: 35, alt: 10 },
+      { name: 'ทพญ. ลลิตา', track: 'อาจารย์ ผศ.', m40_1: 58000, m40_2: 0, m40_6: 35000, m40_4: 1500, m40_8: 5000, expLiving: 38000, expIns: 3500, expRetire: 8700, safe: 20, thai: 25, global: 45, alt: 10 },
+      { name: 'ทพ. ชานนท์', track: 'เจ้าของคลินิก', m40_1: 60000, m40_2: 0, m40_6: 140000, m40_4: 20000, m40_8: 35000, expLiving: 88000, expIns: 8000, expRetire: 9000, safe: 25, thai: 25, global: 35, alt: 15 },
+      { name: 'ทพญ. ณัฐณิชา', track: 'จบใหม่ รพ.รัฐ', m40_1: 52000, m40_2: 15000, m40_6: 0, m40_4: 0, m40_8: 0, expLiving: 56000, expIns: 1500, expRetire: 2600, safe: 50, thai: 25, global: 15, alt: 10 },
+      { name: 'ทพ. อธิป', track: 'เอกชน GP', m40_1: 0, m40_2: 0, m40_6: 95000, m40_4: 2000, m40_8: 15000, expLiving: 64000, expIns: 0, expRetire: 0, safe: 10, thai: 15, global: 45, alt: 30 },
+      { name: 'ทพญ. มนัสนันท์', track: 'หมอรัฐ 5 ปี', m40_1: 68000, m40_2: 0, m40_6: 40000, m40_4: 2500, m40_8: 0, expLiving: 36000, expIns: 4500, expRetire: 14960, safe: 20, thai: 30, global: 40, alt: 10 }
+    ];
+
+    
+    // =========================================================================
+    // GOOGLE SHEETS + APPS SCRIPT SYNC (MAX 75 STUDENTS)
+    // =========================================================================
+    // หมายเหตุสำหรับอาจารย์: สามารถวาง Web App URL ตรงนี้ก่อนอัปโหลดขึ้น GitHub/Vercel ได้เลย
+    const DEFAULT_APPS_SCRIPT_URL = '';
+    const MAX_STUDENTS_PER_ROOM = 75;
+    let appsScriptUrl = DEFAULT_APPS_SCRIPT_URL;
+    let liveSheetStudents = null;
+    let hostPollTimer = null;
+
+    try {
+      const savedUrl = localStorage.getItem('dent_apps_script_url');
+      if (savedUrl) appsScriptUrl = savedUrl;
+      const urlApi = new URLSearchParams(window.location.search).get('api');
+      if (urlApi) {
+        appsScriptUrl = urlApi;
+        localStorage.setItem('dent_apps_script_url', urlApi);
+      }
+    } catch (e) {}
+
+    async function fetchSheetStudents() {
+      if (!appsScriptUrl) return;
+      try {
+        const res = await fetch(`${appsScriptUrl}?action=list&room=${encodeURIComponent(state.roomCode)}`);
+        const data = await res.json();
+        if (data && data.ok && Array.isArray(data.students)) {
+          liveSheetStudents = data.students;
+          const cntEl = document.getElementById('submittedCountText');
+          if (cntEl) cntEl.textContent = `${data.students.length} / ${MAX_STUDENTS_PER_ROOM} คน (Live Sheet)`;
+          if (state.role === 'host') renderInstructorDashboard();
+        startHostPolling();
+        }
+      } catch (e) {
+        // Keep last state on transient network error
+      }
+    }
+
+    function startHostPolling() {
+      if (hostPollTimer) clearInterval(hostPollTimer);
+      if (!appsScriptUrl) return;
+      fetchSheetStudents();
+      hostPollTimer = setInterval(fetchSheetStudents, 4500);
+    }
+
+    let studentProjChart = null;
+    let chartIncomeObj = null;
+    let chartExpenseObj = null;
+    let chartInvestObj = null;
+
+    function fmtBaht(n) {
+      const sign = n < 0 ? '-' : '';
+      return sign + '฿' + Math.abs(Math.round(n)).toLocaleString('th-TH');
+    }
+
+    function fmtShort(n) {
+      const sign = n < 0 ? '-' : '';
+      const abs = Math.abs(n);
+      if (abs >= 1000000) return sign + '฿' + (abs / 1000000).toFixed(2) + 'M';
+      if (abs >= 1000) return sign + '฿' + Math.round(abs / 1000) + 'K';
+      return sign + '฿' + Math.round(abs);
+    }
+
+    // =========================================================================
+    // PRESET LOADER (Adjust freely afterwards!)
+    // =========================================================================
+    function applyPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+      state.presetKey = key;
+
+      document.getElementById('inc40_1').value = p.inc40_1;
+      document.getElementById('inc40_2').value = p.inc40_2;
+      document.getElementById('inc40_6').value = p.inc40_6;
+      document.getElementById('inc40_4').value = p.inc40_4;
+      document.getElementById('inc40_8').value = p.inc40_8;
+      document.getElementById('incGift').value = p.incGift;
+
+      const fSel = document.getElementById('fundTypeSelect');
+      const fSlider = document.getElementById('fundPctSlider');
+      fSel.value = p.fundType;
+      if (p.fundType === 'gpf') {
+        fSlider.max = 27;
+        fSlider.value = p.fundPct;
+      } else if (p.fundType === 'pvd') {
+        fSlider.max = 15;
+        fSlider.value = Math.min(15, p.fundPct);
+      } else {
+        fSlider.value = 0;
+      }
+
+      document.getElementById('stuHeaderTrack').textContent = `ตัวอย่าง: ${p.label}`;
+
+      // Update button highlights in both Lobby & Step 1
+      document.querySelectorAll('.lobby-preset-btn').forEach(b => {
+        const active = b.getAttribute('data-preset') === key;
+        b.className = active
+          ? 'lobby-preset-btn py-1.5 px-2 rounded-lg bg-sky-500/20 border border-sky-400 text-sky-200 font-bold transition text-left'
+          : 'lobby-preset-btn py-1.5 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition text-left';
+      });
+      document.querySelectorAll('.step-preset-btn').forEach(b => {
+        const active = b.getAttribute('data-preset') === key;
+        b.className = active
+          ? 'step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400 text-sky-200 text-[11px] font-bold'
+          : 'step-preset-btn shrink-0 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[11px]';
+      });
+
+      computePortfolioFromInputs();
+    }
+
+    // =========================================================================
+    // TAX, GPF/PVD %, CASH FLOW & INVESTMENT ENGINE
+    // =========================================================================
+    function calcProgressiveTax(netTaxable) {
+      let rem = Math.max(0, netTaxable);
+      const brackets = [
+        { limit: 150000, rate: 0.00 },
+        { limit: 150000, rate: 0.05 },
+        { limit: 200000, rate: 0.10 },
+        { limit: 250000, rate: 0.15 },
+        { limit: 250000, rate: 0.20 },
+        { limit: 1000000, rate: 0.25 },
+        { limit: 3000000, rate: 0.30 },
+        { limit: Infinity, rate: 0.35 }
+      ];
+      let tax = 0;
+      for (const b of brackets) {
+        if (rem <= 0) break;
+        const chunk = Math.min(rem, b.limit);
+        tax += chunk * b.rate;
+        rem -= chunk;
+      }
+      return Math.round(tax);
+    }
+
+    function computePortfolioFromInputs() {
+      const m1 = Number(document.getElementById('inc40_1').value) || 0;
+      const m2 = Number(document.getElementById('inc40_2').value) || 0;
+      const m6 = Number(document.getElementById('inc40_6').value) || 0;
+      const m4 = Number(document.getElementById('inc40_4').value) || 0;
+      const m8 = Number(document.getElementById('inc40_8').value) || 0;
+      const mGift = Number(document.getElementById('incGift').value) || 0;
+      const giftSource = document.getElementById('giftSourceSelect').value;
+
+      const a1 = m1 * 12, a2 = m2 * 12, a6 = m6 * 12, a4 = m4 * 12, a8 = m8 * 12, aGift = mGift * 12;
+      const mIncome = m1 + m2 + m6 + m4 + m8 + mGift;
+      const annualGross = mIncome * 12;
+
+      // Living expenses
+      const eHouse = Number(document.getElementById('expRentHouse').value) || 0;
+      const eCar = Number(document.getElementById('expCarLoan').value) || 0;
+      const eFuel = Number(document.getElementById('expFuelTravel').value) || 0;
+      const eFood = Number(document.getElementById('expFood').value) || 0;
+      const eLife = Number(document.getElementById('expLifestyle').value) || 0;
+      const eVac = Number(document.getElementById('expVacation').value) || 0;
+      const eParent = Number(document.getElementById('expParents').value) || 0;
+      const eOther = Number(document.getElementById('expOther').value) || 0;
+
+      const mLivingOnly = eHouse + eCar + eFuel + eFood + eLife + eVac + eParent + eOther;
+
+      // Insurance
+      const eInsLife = Number(document.getElementById('expInsuranceLife').value) || 0;
+      const eInsProf = Number(document.getElementById('expInsuranceProf').value) || 0;
+      const mInsTotal = eInsLife + eInsProf;
+
+      // GPF / PVD % from 40(1)
+      const fType = document.getElementById('fundTypeSelect').value;
+      const fSlider = document.getElementById('fundSliderWrap');
+      const fRange = document.getElementById('fundPctSlider');
+      let fundPct = 0;
+      if (fType === 'none' || m1 <= 0) {
+        fSlider.classList.add('opacity-50');
+        fundPct = 0;
+      } else {
+        fSlider.classList.remove('opacity-50');
+        fRange.max = (fType === 'gpf') ? 27 : 15;
+        if (Number(fRange.value) > Number(fRange.max)) fRange.value = fRange.max;
+        fundPct = Number(fRange.value) || 0;
+      }
+      const mFundBaht = Math.round(m1 * (fundPct / 100));
+      document.getElementById('lblFundPct').textContent = fundPct + '%';
+      document.getElementById('lblFundBaht').textContent = fmtBaht(mFundBaht) + ' / เดือน';
+
+      // Update Step 1 & Step 2 Slider Labels
+      document.getElementById('lblInc40_1').textContent = fmtBaht(m1) + '/ด.';
+      document.getElementById('lblInc40_2').textContent = fmtBaht(m2) + '/ด.';
+      document.getElementById('lblInc40_6').textContent = fmtBaht(m6) + '/ด.';
+      document.getElementById('lblInc40_4').textContent = fmtBaht(m4) + '/ด.';
+      document.getElementById('lblInc40_8').textContent = fmtBaht(m8) + '/ด.';
+      document.getElementById('lblIncGift').textContent = fmtBaht(mGift) + '/ด.';
+
+      document.getElementById('lblExpInsLife').textContent = fmtBaht(eInsLife) + '/ด.';
+      document.getElementById('lblExpInsProf').textContent = fmtBaht(eInsProf) + '/ด.';
+      document.getElementById('lblExpRentHouse').textContent = fmtBaht(eHouse) + '/ด.';
+      document.getElementById('lblExpCarLoan').textContent = fmtBaht(eCar) + '/ด.';
+      document.getElementById('lblExpFuelTravel').textContent = fmtBaht(eFuel) + '/ด.';
+      document.getElementById('lblExpFood').textContent = fmtBaht(eFood) + '/ด.';
+      document.getElementById('lblExpLifestyle').textContent = fmtBaht(eLife) + '/ด.';
+      document.getElementById('lblExpVacation').textContent = fmtBaht(eVac) + '/ด.';
+      document.getElementById('lblExpParents').textContent = fmtBaht(eParent) + '/ด.';
+      document.getElementById('lblExpOther').textContent = fmtBaht(eOther) + '/ด.';
+
+      // Tax deductions
+      const exp40_1_2 = Math.min((a1 + a2) * 0.5, 100000);
+      const exp40_6 = a6 * 0.60;
+      const exp40_8 = a8 * 0.60;
+      const totalStdExp = exp40_1_2 + exp40_6 + exp40_8;
+
+      const personalAllow = 60000;
+      const wht40_4 = Math.round(a4 * 0.10);
+      const giftExemptLimit = (giftSource === 'parents') ? 20000000 : 10000000;
+      const giftTax = Math.round(Math.max(0, aGift - giftExemptLimit) * 0.05);
+
+      // 1) PART 1 SHOCK TAX: Calculated with ONLY 60,000 THB personal allowance!
+      const taxablePersonalOnly = Math.max(0, (a1 + a2 + a6 + a8) - totalStdExp - personalAllow);
+      const annualTaxPersonalOnly = calcProgressiveTax(taxablePersonalOnly) + wht40_4 + giftTax;
+
+      const half6_8 = (a6 + a8) / 2;
+      let pnd94PersonalOnly = 0;
+      if (half6_8 > 60000) {
+        const halfNet = Math.max(0, (half6_8 * 0.40) - (personalAllow * 0.5));
+        pnd94PersonalOnly = calcProgressiveTax(halfNet);
+      }
+
+      // 2) PART 2 ACTUAL TAX: With Insurance + GPF/PVD deductions
+      const insAllow = Math.min(100000, eInsLife * 12);
+      const fundAllow = Math.min(500000, mFundBaht * 12);
+      const totalAllow = personalAllow + insAllow + fundAllow;
+
+      const taxableProg = Math.max(0, (a1 + a2 + a6 + a8) - totalStdExp - totalAllow);
+      const annualTax = calcProgressiveTax(taxableProg) + wht40_4 + giftTax;
+      const mTax = Math.round(annualTax / 12);
+      const taxSavedAnnual = Math.max(0, annualTaxPersonalOnly - annualTax);
+
+      // 3) CASH FLOW INVESTABLE SURPLUS (EXCLUDING GPF/PVD — GPF/PVD is deducted first!)
+      const mOutflowTotal = mLivingOnly + mInsTotal + mFundBaht;
+      const mSurplusAfterOutflow = mIncome - mTax - mOutflowTotal;
+      const totalMonthlyInvestBudget = Math.max(0, mSurplusAfterOutflow);
+
+      state.mIncome = mIncome;
+      state.mGift = mGift;
+      state.mTax = mTax;
+      state.mLivingExp = mLivingOnly;
+      state.mInsExp = mInsTotal;
+      state.mFundExp = mFundBaht;
+      state.mInvestable = totalMonthlyInvestBudget;
+      state.savingsRatePct = mIncome > 0 ? Math.max(0, Math.round((totalMonthlyInvestBudget / mIncome) * 100)) : 0;
+
+      // Financial Health Score (0-100)
+      let score = 60;
+      if (state.savingsRatePct >= 25) score += 20;
+      else if (state.savingsRatePct >= 15) score += 10;
+      if (mInsTotal >= 2000) score += 10;
+      if (m2 <= 15000) score += 5;
+      if (mFundBaht > 0) score += 5;
+      if (mSurplusAfterOutflow < 0) score -= 25;
+      state.score = Math.max(10, Math.min(100, score));
+
+      document.getElementById('stuHealthScoreBadge').textContent = `คะแนนการเงิน ${state.score}/100`;
+      document.getElementById('sumMonthIncome').textContent = fmtBaht(mIncome);
+      document.getElementById('sumMonthTax').textContent = fmtBaht(mTax);
+      document.getElementById('sumMonthExpense').textContent = fmtBaht(mLivingOnly + mInsTotal);
+      document.getElementById('sumMonthInvest').textContent = fmtBaht(totalMonthlyInvestBudget);
+      document.getElementById('sumMonthInvest').className = `text-xs font-bold mt-0.5 ${mSurplusAfterOutflow < 0 ? 'text-rose-400' : 'text-emerald-400'}`;
+
+      document.getElementById('taxDispGross').textContent = fmtBaht(annualGross);
+      document.getElementById('taxDispDeduct').textContent = '-' + fmtBaht(totalStdExp + personalAllow);
+      document.getElementById('taxDispPND94').textContent = pnd94PersonalOnly > 0 ? fmtBaht(pnd94PersonalOnly) : 'ไม่ต้องยื่น';
+      document.getElementById('taxDispAnnual').textContent = fmtBaht(annualTaxPersonalOnly);
+
+      document.getElementById('lblTaxAfterDeduct').textContent = fmtBaht(mTax) + '/ด.';
+      document.getElementById('lblTaxSavedAnnual').textContent = `ประหยัดภาษี +${fmtBaht(taxSavedAnnual)}/ปี`;
+
+      const cfBox = document.getElementById('cashFlowAlertBox');
+      const dispSurplus = document.getElementById('dispInvestableMonthly');
+      const cfHint = document.getElementById('cashFlowHint');
+      dispSurplus.textContent = fmtBaht(totalMonthlyInvestBudget);
+      if (mSurplusAfterOutflow < 0) {
+        cfBox.className = 'p-3 rounded-xl bg-rose-950/50 border border-rose-500/50 space-y-1 text-xs';
+        dispSurplus.className = 'text-rose-400 text-sm font-bold';
+        cfHint.textContent = `⚠️ รายจ่ายรวมสูงกว่ารายได้สุทธิอยู่ ${fmtBaht(Math.abs(mSurplusAfterOutflow))}/ด.! กรุณาปรับลดรายจ่าย`;
+      } else {
+        cfBox.className = 'p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 space-y-1 text-xs';
+        dispSurplus.className = 'text-emerald-300 text-sm font-bold';
+        cfHint.textContent = `✅ หัก กบข./PVD ไว้แล้ว ${fmtBaht(mFundBaht)}/ด. • เหลือเงินจากเงินเดือนไปลงทุนต่อ ${fmtBaht(totalMonthlyInvestBudget)}/ด. (ไม่รวม กบข.)`;
+      }
+
+      document.getElementById('invBudgetLabel').textContent = fmtBaht(totalMonthlyInvestBudget) + '/ด.';
+      updateInvestmentProjection();
+    }
+
+    function updateInvestmentProjection() {
+      const a = {
+        emergency: Number(document.getElementById('allocEmergency').value) || 0,
+        bond: Number(document.getElementById('allocBond').value) || 0,
+        thaiStock: Number(document.getElementById('allocThaiStock').value) || 0,
+        thaiFund: Number(document.getElementById('allocThaiFund').value) || 0,
+        rmf: Number(document.getElementById('allocRMF').value) || 0,
+        thaiEsg: Number(document.getElementById('allocThaiESG').value) || 0,
+        globalStock: Number(document.getElementById('allocGlobalStock').value) || 0,
+        globalFund: Number(document.getElementById('allocGlobalFund').value) || 0,
+        etf: Number(document.getElementById('allocETF').value) || 0,
+        gold: Number(document.getElementById('allocGold').value) || 0,
+        crypto: Number(document.getElementById('allocCrypto').value) || 0,
+        collect: Number(document.getElementById('allocCollect').value) || 0
+      };
+      state.alloc = a;
+      document.getElementById('lblAllocEmergency').textContent = a.emergency + '%';
+      document.getElementById('lblAllocBond').textContent = a.bond + '%';
+      document.getElementById('lblAllocThaiStock').textContent = a.thaiStock + '%';
+      document.getElementById('lblAllocThaiFund').textContent = a.thaiFund + '%';
+      document.getElementById('lblAllocRMF').textContent = a.rmf + '%';
+      document.getElementById('lblAllocThaiESG').textContent = a.thaiEsg + '%';
+      document.getElementById('lblAllocGlobalStock').textContent = a.globalStock + '%';
+      document.getElementById('lblAllocGlobalFund').textContent = a.globalFund + '%';
+      document.getElementById('lblAllocETF').textContent = a.etf + '%';
+      document.getElementById('lblAllocGold').textContent = a.gold + '%';
+      document.getElementById('lblAllocCrypto').textContent = a.crypto + '%';
+      document.getElementById('lblAllocCollect').textContent = a.collect + '%';
+
+      const sumPct = Object.values(a).reduce((acc, v) => acc + v, 0);
+      const badge = document.getElementById('invTotalPctBadge');
+      badge.textContent = sumPct + '%';
+      badge.className = sumPct === 100
+        ? 'px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/40'
+        : 'px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-xs font-bold border border-rose-500/40';
+
+      const baseReturn = Number(document.getElementById('simReturnRate').value) || 0;
+      const inflation = Number(document.getElementById('simInflationRate').value) || 0;
+      document.getElementById('lblCustomReturn').textContent = baseReturn.toFixed(1) + '%';
+      document.getElementById('lblInflation').textContent = inflation.toFixed(1) + '%';
+
+      const useRec = document.getElementById('chkRecession').checked;
+      document.getElementById('recessionControls').classList.toggle('opacity-40', !useRec);
+      const rStart = Number(document.getElementById('recStartAge').value) || 35;
+      const rEnd = Number(document.getElementById('recEndAge').value) || 37;
+      const rRate = (Number(document.getElementById('recReturnPct').value) || 0) / 100;
+
+      // Year-by-year simulation from age 25 to 60
+      const ages = [];
+      const nominalSeries = [];
+      const realSeries = [];
+      let wealth = 0;
+      const annualContribution = state.mInvestable * 12;
+      const infDec = inflation / 100;
+
+      for (let age = 25; age <= 60; age++) {
+        ages.push(`อายุ ${age}`);
+        if (age > 25) {
+          const inRecession = useRec && age >= rStart && age <= rEnd;
+          const yrRate = inRecession ? rRate : (baseReturn / 100);
+          wealth = (wealth + annualContribution) * (1 + yrRate);
+          if (wealth < 0) wealth = 0;
+        }
+        const yrsElapsed = age - 25;
+        const realWealth = wealth / Math.pow(1 + infDec, yrsElapsed);
+        nominalSeries.push(Math.round(wealth));
+        realSeries.push(Math.round(realWealth));
+      }
+
+      state.age60Nominal = nominalSeries[nominalSeries.length - 1];
+      state.age60Real = realSeries[realSeries.length - 1];
+
+      document.getElementById('dispAge60Nominal').textContent = fmtShort(state.age60Nominal);
+      document.getElementById('dispAge60Real').textContent = fmtShort(state.age60Real);
+
+      const ctx = document.getElementById('studentProjectionChart').getContext('2d');
+      if (studentProjChart) studentProjChart.destroy();
+      studentProjChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ages,
+          datasets: [
+            {
+              label: 'มูลค่าพอร์ต (Nominal)',
+              data: nominalSeries,
+              borderColor: '#34d399',
+              backgroundColor: 'rgba(52, 211, 153, 0.12)',
+              fill: true,
+              tension: 0.25,
+              pointRadius: 0
+            },
+            {
+              label: 'มูลค่าจริงหลังหักเงินเฟ้อ',
+              data: realSeries,
+              borderColor: '#fbbf24',
+              borderDash: [4, 4],
+              backgroundColor: 'transparent',
+              tension: 0.25,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#cbd5e1', font: { family: 'Prompt', size: 9 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8', maxTicksLimit: 8, font: { family: 'Prompt', size: 9 } } },
+            y: {
+              ticks: {
+                color: '#94a3b8',
+                font: { family: 'Prompt', size: 9 },
+                callback: v => '฿' + (v / 1000000).toFixed(0) + 'M'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // INSTAGRAM-READY SUMMARY CARD GENERATOR (1080x1350 PORTRAIT PNG)
+    // =========================================================================
+    function generateIGCard() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1080;
+      canvas.height = 1350;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Luxury Editorial Dark-Teal Gradient Background
+      const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+      bg.addColorStop(0, '#091124');
+      bg.addColorStop(0.55, '#0f2537');
+      bg.addColorStop(1, '#091522');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 1080, 1350);
+
+      // Decorative Glow Circles
+      const g1 = ctx.createRadialGradient(920, 180, 20, 920, 180, 380);
+      g1.addColorStop(0, 'rgba(45, 212, 191, 0.25)');
+      g1.addColorStop(1, 'rgba(45, 212, 191, 0)');
+      ctx.fillStyle = g1;
+      ctx.fillRect(500, 0, 580, 600);
+
+      const g2 = ctx.createRadialGradient(140, 1180, 20, 140, 1180, 420);
+      g2.addColorStop(0, 'rgba(168, 85, 247, 0.22)');
+      g2.addColorStop(1, 'rgba(168, 85, 247, 0)');
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 750, 600, 600);
+
+      function roundRect(x, y, w, h, r, fill, stroke) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+      }
+
+      // Header Tag
+      roundRect(64, 64, 340, 48, 24, 'rgba(45, 212, 191, 0.16)', 'rgba(45, 212, 191, 0.5)');
+      ctx.fillStyle = '#5eead4';
+      ctx.font = 'bold 22px Prompt, sans-serif';
+      ctx.fillText(`🦷 ROOM: ${state.roomCode}`, 92, 96);
+
+      // Score Pill Top Right
+      roundRect(750, 64, 266, 48, 24, 'rgba(251, 191, 36, 0.16)', 'rgba(251, 191, 36, 0.55)');
+      ctx.fillStyle = '#fde047';
+      ctx.font = 'bold 22px Prompt, sans-serif';
+      ctx.fillText(`★ SCORE ${state.score}/100`, 788, 96);
+
+      // Main Title & Dentist Name
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 28px Prompt, sans-serif';
+      ctx.fillText('MY DENTIST LIFE PORTFOLIO', 64, 175);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 54px Prompt, sans-serif';
+      ctx.fillText(state.playerName, 64, 240);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '600 30px Prompt, sans-serif';
+      ctx.fillText(`สายงาน: ${PRESETS[state.presetKey].label}`, 64, 290);
+
+      // 4 KPI Metric Cards (2x2 Grid)
+      const kpis = [
+        { label: 'รายได้รวม / เดือน', val: fmtBaht(state.mIncome), col: '#38bdf8', x: 64, y: 340 },
+        { label: 'ภาษีเฉลี่ย / เดือน', val: fmtBaht(state.mTax), col: '#fb7185', x: 556, y: 340 },
+        { label: 'รายจ่าย + ประกัน / เดือน', val: fmtBaht(state.mLivingExp + state.mInsExp), col: '#fbbf24', x: 64, y: 505 },
+        { label: `เงินลงทุนต่อเดือน (${state.savingsRatePct}%)`, val: fmtBaht(state.mInvestable), col: '#34d399', x: 556, y: 505 }
+      ];
+      kpis.forEach(k => {
+        roundRect(k.x, k.y, 460, 140, 24, 'rgba(15, 23, 42, 0.85)', 'rgba(148, 163, 184, 0.22)');
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 24px Prompt, sans-serif';
+        ctx.fillText(k.label, k.x + 28, k.y + 48);
+        ctx.fillStyle = k.col;
+        ctx.font = 'bold 44px Prompt, sans-serif';
+        ctx.fillText(k.val, k.x + 28, k.y + 108);
+      });
+
+      // Portfolio Allocation Card
+      roundRect(64, 680, 952, 310, 28, 'rgba(15, 23, 42, 0.88)', 'rgba(56, 189, 248, 0.3)');
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 30px Prompt, sans-serif';
+      ctx.fillText('📈 สัดส่วนพอร์ตการลงทุนของฉัน', 98, 735);
+
+      const safePct = state.alloc.emergency + state.alloc.bond;
+      const thaiPct = state.alloc.thaiStock + state.alloc.thaiFund + state.alloc.rmf + state.alloc.thaiEsg;
+      const globalPct = state.alloc.globalStock + state.alloc.globalFund + state.alloc.etf;
+      const altPct = state.alloc.gold + state.alloc.crypto + state.alloc.collect;
+
+      const bars = [
+        { name: `🛡️ สำรองฉุกเฉิน & ตราสารหนี้`, pct: safePct, col: '#38bdf8', y: 780 },
+        { name: `🇹🇭 หุ้นไทย / กองทุน / RMF / ThaiESG`, pct: thaiPct, col: '#fbbf24', y: 830 },
+        { name: `🌍 หุ้นต่างประเทศ & Global ETF`, pct: globalPct, col: '#34d399', y: 880 },
+        { name: `✨ ทองคำ / คริปโท / ของสะสม`, pct: altPct, col: '#c084fc', y: 930 }
+      ];
+
+      bars.forEach(b => {
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '500 22px Prompt, sans-serif';
+        ctx.fillText(b.name, 98, b.y);
+        ctx.fillStyle = b.col;
+        ctx.font = 'bold 24px Prompt, sans-serif';
+        ctx.fillText(`${b.pct}%`, 915, b.y);
+
+        roundRect(560, b.y - 18, 330, 18, 9, '#1e293b', null);
+        if (b.pct > 0) {
+          roundRect(560, b.y - 18, Math.max(18, (330 * Math.min(100, b.pct)) / 100), 18, 9, b.col, null);
+        }
+      });
+
+      // Age 60 Wealth Projection Showcase Card
+      roundRect(64, 1020, 952, 220, 28, 'rgba(16, 185, 129, 0.12)', 'rgba(52, 211, 153, 0.45)');
+      ctx.fillStyle = '#a7f3d0';
+      ctx.font = '600 26px Prompt, sans-serif';
+      ctx.fillText('🏁 คาดการณ์มูลค่าพอร์ตตอนเกษียณ (อายุ 60 ปี)', 98, 1075);
+
+      ctx.fillStyle = '#34d399';
+      ctx.font = 'bold 58px Prompt, sans-serif';
+      ctx.fillText(fmtShort(state.age60Nominal), 98, 1155);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 34px Prompt, sans-serif';
+      ctx.fillText(`มูลค่าจริงหลังหักเงินเฟ้อ: ${fmtShort(state.age60Real)}`, 460, 1150);
+
+      const retVal = document.getElementById('simReturnRate').value;
+      const infVal = document.getElementById('simInflationRate').value;
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '400 22px Prompt, sans-serif';
+      ctx.fillText(`สมมติฐาน: ผลตอบแทน ${retVal}%/ปี • เงินเฟ้อ ${infVal}%/ปี`, 98, 1205);
+
+      // Footer
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 22px Prompt, sans-serif';
+      ctx.fillText('Dentist Life Portfolio • Classroom Interactive Edition', 260, 1300);
+
+      const dataUrl = canvas.toDataURL('image/png');
+      document.getElementById('igPreviewImg').src = dataUrl;
+      document.getElementById('igDownloadLink').href = dataUrl;
+      document.getElementById('modalIGPreview').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // INSTRUCTOR DASHBOARD & CLASSROOM AVERAGES
+    // =========================================================================
+    function getAllClassEntries() {
+      const m1 = Number(document.getElementById('inc40_1').value) || 0;
+      const m2 = Number(document.getElementById('inc40_2').value) || 0;
+      const m6 = Number(document.getElementById('inc40_6').value) || 0;
+      const m4 = Number(document.getElementById('inc40_4').value) || 0;
+      const m8 = Number(document.getElementById('inc40_8').value) || 0;
+
+      const me = {
+        name: `⭐ ${state.playerName} (คุณ)`,
+        track: PRESETS[state.presetKey].label,
+        m40_1: m1, m40_2: m2, m40_6: m6, m40_4: m4, m40_8: m8,
+        expLiving: state.mLivingExp,
+        expIns: state.mInsExp,
+        expRetire: state.mFundExp,
+        safe: state.alloc.emergency + state.alloc.bond,
+        thai: state.alloc.thaiStock + state.alloc.thaiFund + state.alloc.rmf + state.alloc.thaiEsg,
+        global: state.alloc.globalStock + state.alloc.globalFund + state.alloc.etf,
+        alt: state.alloc.gold + state.alloc.crypto + state.alloc.collect
+      };
+      if (appsScriptUrl && Array.isArray(liveSheetStudents) && liveSheetStudents.length > 0) {
+        return liveSheetStudents;
+      }
+      return [me, ...CLASS_PEERS];
+    }
+
+    function renderInstructorDashboard() {
+      const entries = getAllClassEntries();
+      const count = entries.length;
+
+      let sumInc = 0, s40_1 = 0, s40_2 = 0, s40_6 = 0, s40_48 = 0;
+      let sumLiv = 0, sumIns = 0, sumRet = 0;
+      let sumSafe = 0, sumThai = 0, sumGlobal = 0, sumAlt = 0;
+      let riskCount = 0;
+
+      entries.forEach(st => {
+        const inc = st.m40_1 + st.m40_2 + st.m40_6 + st.m40_4 + st.m40_8;
+        const out = st.expLiving + st.expIns + st.expRetire;
+        sumInc += inc;
+        s40_1 += st.m40_1; s40_2 += st.m40_2; s40_6 += st.m40_6; s40_48 += (st.m40_4 + st.m40_8);
+        sumLiv += st.expLiving; sumIns += st.expIns; sumRet += st.expRetire;
+        sumSafe += st.safe; sumThai += st.thai; sumGlobal += st.global; sumAlt += st.alt;
+        if (st.expIns === 0 || st.m40_2 > 30000 || out > inc * 0.92) riskCount++;
+      });
+
+      const avgInc = Math.round(sumInc / count);
+      const avgExp = Math.round((sumLiv + sumIns) / count);
+      const avgSavePct = sumInc > 0 ? Math.round(((sumInc - sumLiv - sumIns) / sumInc) * 100) : 0;
+
+      document.getElementById('avgClassIncome').textContent = fmtBaht(avgInc);
+      const p1 = sumInc > 0 ? Math.round((s40_1 / sumInc) * 100) : 0;
+      const p6 = sumInc > 0 ? Math.round((s40_6 / sumInc) * 100) : 0;
+      const p2 = sumInc > 0 ? Math.round((s40_2 / sumInc) * 100) : 0;
+      document.getElementById('avgClassIncomeMix').textContent = `40(1) ${p1}% • 40(6) ${p6}% • 40(2) ${p2}%`;
+
+      document.getElementById('avgClassExpense').textContent = fmtBaht(avgExp);
+      document.getElementById('avgClassSavingsRate').textContent = `อัตราออม+ลงทุนเฉลี่ย ${avgSavePct}%`;
+
+      document.getElementById('avgClassTopAsset').textContent = `Global/ETF ${Math.round(sumGlobal / count)}%`;
+      document.getElementById('avgClassRiskCount').textContent = `${riskCount} คน`;
+
+      if (state.activeHostTab === 'summary') {
+        document.getElementById('hostPanelSummary').classList.remove('hidden');
+        document.getElementById('hostPanelTable').classList.add('hidden');
+
+        if (chartIncomeObj) chartIncomeObj.destroy();
+        chartIncomeObj = new Chart(document.getElementById('chartClassIncome').getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['40(1) เงินเดือน', '40(6) คลินิก DF', '40(2) จ้างเวร', '40(4)+(8) อื่นๆ'],
+            datasets: [{
+              data: [Math.round(s40_1 / count), Math.round(s40_6 / count), Math.round(s40_2 / count), Math.round(s40_48 / count)],
+              backgroundColor: ['#38bdf8', '#34d399', '#fbbf24', '#c084fc'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { family: 'Prompt', size: 10 } } } }
+          }
+        });
+
+        if (chartExpenseObj) chartExpenseObj.destroy();
+        chartExpenseObj = new Chart(document.getElementById('chartClassExpense').getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['ค่าครองชีพ/ผ่อน', 'ประกัน', 'กบข./PVD', 'เหลือลงทุน'],
+            datasets: [{
+              label: 'บาท/เดือน',
+              data: [
+                Math.round(sumLiv / count),
+                Math.round(sumIns / count),
+                Math.round(sumRet / count),
+                Math.max(0, avgInc - Math.round((sumLiv + sumIns + sumRet) / count))
+              ],
+              backgroundColor: ['#f97316', '#38bdf8', '#10b981', '#a855f7'],
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { ticks: { color: '#cbd5e1', font: { family: 'Prompt', size: 9 } } },
+              y: { ticks: { color: '#94a3b8', font: { family: 'Prompt', size: 9 } } }
+            }
+          }
+        });
+
+        if (chartInvestObj) chartInvestObj.destroy();
+        chartInvestObj = new Chart(document.getElementById('chartClassInvest').getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['ฉุกเฉิน+ตราสารหนี้', 'หุ้น/กองทุนไทย/RMF', 'หุ้น/ETF ตปท.', 'ทอง/คริปโท/สะสม'],
+            datasets: [{
+              data: [Math.round(sumSafe / count), Math.round(sumThai / count), Math.round(sumGlobal / count), Math.round(sumAlt / count)],
+              backgroundColor: ['#38bdf8', '#fbbf24', '#34d399', '#c084fc'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { family: 'Prompt', size: 10 } } } }
+          }
+        });
+      } else {
+        document.getElementById('hostPanelSummary').classList.add('hidden');
+        document.getElementById('hostPanelTable').classList.remove('hidden');
+
+        const thead = document.getElementById('hostTableHeadRow');
+        const tbody = document.getElementById('hostTableBody');
+        tbody.innerHTML = '';
+
+        if (state.activeHostTab === 'income') {
+          thead.innerHTML = `
+            <th class="py-2 px-3">ชื่อนิสิต (สายงาน)</th>
+            <th class="py-2 px-3">40(1)</th>
+            <th class="py-2 px-3">40(2)</th>
+            <th class="py-2 px-3">40(6)</th>
+            <th class="py-2 px-3">40(4)+(8)</th>
+            <th class="py-2 px-3">รวม/ด.</th>
+          `;
+          entries.forEach(st => {
+            const tot = st.m40_1 + st.m40_2 + st.m40_6 + st.m40_4 + st.m40_8;
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/70 cursor-pointer';
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 font-bold text-white">${st.name} <span class="text-[10px] text-sky-300 font-normal">(${st.track})</span></td>
+              <td class="py-2.5 px-3">${fmtBaht(st.m40_1)}</td>
+              <td class="py-2.5 px-3 ${st.m40_2 > 30000 ? 'text-rose-400 font-bold' : ''}">${fmtBaht(st.m40_2)}</td>
+              <td class="py-2.5 px-3 text-emerald-300">${fmtBaht(st.m40_6)}</td>
+              <td class="py-2.5 px-3">${fmtBaht(st.m40_4 + st.m40_8)}</td>
+              <td class="py-2.5 px-3 font-bold text-sky-300">${fmtBaht(tot)}</td>
+            `;
+            tr.addEventListener('click', () => inspectStudent(st, tot));
+            tbody.appendChild(tr);
+          });
+        } else if (state.activeHostTab === 'expense') {
+          thead.innerHTML = `
+            <th class="py-2 px-3">ชื่อนิสิต</th>
+            <th class="py-2 px-3">ค่าครองชีพ &amp; ผ่อน</th>
+            <th class="py-2 px-3">ประกัน</th>
+            <th class="py-2 px-3">กบข./PVD</th>
+            <th class="py-2 px-3">เหลือลงทุน/ด.</th>
+            <th class="py-2 px-3">สถานะ</th>
+          `;
+          entries.forEach(st => {
+            const inc = st.m40_1 + st.m40_2 + st.m40_6 + st.m40_4 + st.m40_8;
+            const rem = inc - st.expLiving - st.expIns - st.expRetire;
+            const warn = st.expIns === 0 ? '🚨 ไม่มีประกัน' : (rem < 5000 ? '⚠️ เหลือออมน้อย' : '✅ สมดุลดี');
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/70 cursor-pointer';
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 font-bold text-white">${st.name}</td>
+              <td class="py-2.5 px-3">${fmtBaht(st.expLiving)}</td>
+              <td class="py-2.5 px-3 ${st.expIns === 0 ? 'text-rose-400 font-bold' : 'text-sky-300'}">${fmtBaht(st.expIns)}</td>
+              <td class="py-2.5 px-3 text-emerald-300">${fmtBaht(st.expRetire)}</td>
+              <td class="py-2.5 px-3 font-bold">${fmtBaht(Math.max(0, rem + st.expRetire))}</td>
+              <td class="py-2.5 px-3">${warn}</td>
+            `;
+            tr.addEventListener('click', () => inspectStudent(st, inc));
+            tbody.appendChild(tr);
+          });
+        } else {
+          thead.innerHTML = `
+            <th class="py-2 px-3">ชื่อนิสิต</th>
+            <th class="py-2 px-3">ฉุกเฉิน+หนี้</th>
+            <th class="py-2 px-3">ไทย+RMF/ESG</th>
+            <th class="py-2 px-3">Global/ETF</th>
+            <th class="py-2 px-3">ทอง/คริปโท/อื่นๆ</th>
+          `;
+          entries.forEach(st => {
+            const inc = st.m40_1 + st.m40_2 + st.m40_6 + st.m40_4 + st.m40_8;
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/70 cursor-pointer';
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 font-bold text-white">${st.name}</td>
+              <td class="py-2.5 px-3 text-sky-300">${st.safe}%</td>
+              <td class="py-2.5 px-3 text-amber-300">${st.thai}%</td>
+              <td class="py-2.5 px-3 text-emerald-300 font-bold">${st.global}%</td>
+              <td class="py-2.5 px-3 text-purple-300">${st.alt}%</td>
+            `;
+            tr.addEventListener('click', () => inspectStudent(st, inc));
+            tbody.appendChild(tr);
+          });
+        }
+      }
+    }
+
+    function inspectStudent(st, totInc) {
+      document.getElementById('inspTitle').textContent = `${st.name} (${st.track}) — รายได้รวม ${fmtBaht(totInc)}/ด.`;
+      const issues = [];
+      if (st.m40_2 > 20000) issues.push(`มีรายได้ 40(2) สูง (${fmtBaht(st.m40_2)}/ด.) เสียเปรียบภาษี`);
+      if (st.expIns === 0) issues.push('ยังไม่ได้จัดงบประกันสุขภาพ/ชดเชยรายได้');
+      if (st.expRetire === 0) issues.push('ยังไม่มีการออมผ่าน กบข./PVD');
+      document.getElementById('inspDesc').textContent = issues.length > 0
+        ? `⚠️ ประเด็นชวนอภิปราย: ${issues.join(' • ')}`
+        : `✅ พอร์ตสมดุลดีมาก! จัดสรรประกัน ${fmtBaht(st.expIns)}/ด. + กบข./PVD ${fmtBaht(st.expRetire)}/ด. และลงทุน Global/ETF ${st.global}%`;
+    }
+
+    // =========================================================================
+    // NAVIGATION & EVENT LISTENERS
+    // =========================================================================
+    function activateStudentStep(stepNum) {
+      ['panelStep1', 'panelStep2', 'panelStep3'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      ['tabStep1', 'tabStep2', 'tabStep3'].forEach(id => {
+        document.getElementById(id).className = 'py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition';
+      });
+      document.getElementById(`panelStep${stepNum}`).classList.remove('hidden');
+      document.getElementById(`tabStep${stepNum}`).className = 'py-2 rounded-lg text-xs font-bold bg-teal-400 text-slate-950 shadow transition';
+      if (stepNum === 3) updateInvestmentProjection();
+    }
+
+    function switchMainView(mode) {
+      document.getElementById('viewLobby').classList.add('hidden');
+      if (mode === 'host') {
+        state.role = 'host';
+        document.getElementById('viewStudentPortfolio').classList.add('hidden');
+        document.getElementById('viewInstructorDashboard').classList.remove('hidden');
+        document.getElementById('instructorControlBar').classList.remove('hidden');
+        document.getElementById('topSwitchLabel').textContent = 'กำลังเปิดจออาจารย์ (PC)';
+        document.getElementById('roleBadgeText').textContent = '• อาจารย์';
+        renderInstructorDashboard();
+      } else {
+        state.role = 'student';
+        document.getElementById('viewInstructorDashboard').classList.add('hidden');
+        document.getElementById('viewStudentPortfolio').classList.remove('hidden');
+        document.getElementById('topSwitchLabel').textContent = 'จออาจารย์ (PC)';
+        document.getElementById('roleBadgeText').textContent = '• นิสิต';
+        computePortfolioFromInputs();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyPreset('gov_new');
+
+      document.querySelectorAll('.lobby-preset-btn, .step-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyPreset(btn.getAttribute('data-preset')));
+      });
+
+
+
+      // Active Room Code managed by Instructor (stored in localStorage for same-browser persistence)
+      let activeClassRoomCode = 'DENT-2569';
+      try {
+        const savedRoom = localStorage.getItem('dent_active_room');
+        if (savedRoom) activeClassRoomCode = savedRoom.toUpperCase();
+      } catch (e) {}
+
+      // Auto-fill Room Code from URL ?room=XXXX (for QR Code scanning)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qrRoom = urlParams.get('room');
+        if (qrRoom) {
+          document.getElementById('inputRoomCode').value = qrRoom.trim().toUpperCase();
+        }
+      } catch (e) {}
+
+      document.getElementById('hostRoomInput').value = activeClassRoomCode;
+
+      document.getElementById('btnSetHostRoom').addEventListener('click', () => {
+        const newCode = (document.getElementById('hostRoomInput').value.trim() || 'DENT-2569').toUpperCase();
+        activeClassRoomCode = newCode;
+        state.roomCode = newCode;
+        document.getElementById('hostRoomInput').value = newCode;
+        document.getElementById('inputRoomCode').value = newCode;
+        document.getElementById('roomCodeText').textContent = newCode;
+        try { localStorage.setItem('dent_active_room', newCode); } catch (e) {}
+        if (appsScriptUrl) {
+          fetch(appsScriptUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'setRoom', roomCode: newCode })
+          }).catch(() => {});
+        }
+        const btn = document.getElementById('btnSetHostRoom');
+        btn.textContent = '✓ บันทึกแล้ว';
+        setTimeout(() => { btn.textContent = 'ตั้งรหัส'; }, 1800);
+      });
+
+      document.getElementById('btnCopyRoomLink').addEventListener('click', () => {
+        const base = window.location.href.split('?')[0];
+        const shareUrl = `${base}?room=${encodeURIComponent(activeClassRoomCode)}${appsScriptUrl ? '&api=' + encodeURIComponent(appsScriptUrl) : ''}`;
+        const btn = document.getElementById('btnCopyRoomLink');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).catch(() => {});
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = shareUrl;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        btn.textContent = '✓ คัดลอกลิงก์แล้ว';
+        setTimeout(() => { btn.textContent = '🔗 ลิงก์เข้าห้อง'; }, 2000);
+      });
+
+      // Sheet Config Modal Listeners
+      document.getElementById('btnOpenSheetConfig').addEventListener('click', () => {
+        document.getElementById('inputAppsScriptUrl').value = appsScriptUrl || '';
+        document.getElementById('sheetSyncStatusText').textContent = appsScriptUrl
+          ? 'สถานะ: เชื่อมต่อ Google Sheet แล้ว ✅'
+          : 'สถานะ: โหมดทดสอบออฟไลน์ (ยังไม่ได้ใส่ URL)';
+        document.getElementById('modalSheetConfig').classList.remove('hidden');
+      });
+      document.getElementById('btnCloseSheetConfig').addEventListener('click', () => {
+        document.getElementById('modalSheetConfig').classList.add('hidden');
+      });
+      document.getElementById('btnClearSheetUrl').addEventListener('click', () => {
+        appsScriptUrl = '';
+        liveSheetStudents = null;
+        try { localStorage.removeItem('dent_apps_script_url'); } catch (e) {}
+        document.getElementById('modalSheetConfig').classList.add('hidden');
+        renderInstructorDashboard();
+      });
+      document.getElementById('btnSaveSheetUrl').addEventListener('click', () => {
+        appsScriptUrl = document.getElementById('inputAppsScriptUrl').value.trim();
+        try { localStorage.setItem('dent_apps_script_url', appsScriptUrl); } catch (e) {}
+        document.getElementById('modalSheetConfig').classList.add('hidden');
+        startHostPolling();
+      });
+
+      document.getElementById('btnEnterRoom').addEventListener('click', async () => {
+        const enteredCode = (document.getElementById('inputRoomCode').value.trim()).toUpperCase();
+        const errEl = document.getElementById('roomErrorMsg');
+        const enterBtn = document.getElementById('btnEnterRoom');
+
+        if (appsScriptUrl) {
+          enterBtn.disabled = true;
+          try {
+            const res = await fetch(`${appsScriptUrl}?action=checkRoom&room=${encodeURIComponent(enteredCode)}`);
+            const data = await res.json();
+            if (!data.validRoom) {
+              errEl.textContent = `❌ ไม่พบรหัสห้อง "${enteredCode || '(ว่าง)'}" กรุณาตรวจสอบรหัสห้องที่อาจารย์เปิดสอน`;
+              errEl.classList.remove('hidden');
+              enterBtn.disabled = false;
+              return;
+            }
+            if (data.isFull) {
+              errEl.textContent = `❌ ห้องเรียนเต็มแล้ว (${data.count}/${MAX_STUDENTS_PER_ROOM} คน)`;
+              errEl.classList.remove('hidden');
+              enterBtn.disabled = false;
+              return;
+            }
+          } catch (e) {
+            // Fallback to local check if offline
+          }
+          enterBtn.disabled = false;
+        } else if (!enteredCode || enteredCode !== activeClassRoomCode) {
+          errEl.textContent = `❌ ไม่พบรหัสห้อง "${enteredCode || '(ว่าง)'}" กรุณาตรวจสอบรหัสห้องที่อาจารย์เปิดสอน (ปัจจุบัน: ${activeClassRoomCode})`;
+          errEl.classList.remove('hidden');
+          return;
+        }
+
+        errEl.classList.add('hidden');
+        state.roomCode = enteredCode;
+        state.playerName = document.getElementById('inputPlayerName').value.trim() || 'ทพ. นภัส';
+        document.getElementById('stuHeaderName').textContent = state.playerName;
+        document.getElementById('roomCodeText').textContent = state.roomCode;
+        document.getElementById('roomBadge').classList.remove('hidden');
+        document.getElementById('roomBadge').classList.add('flex');
+        switchMainView(state.role);
+      });
+
+      document.getElementById('tabStep1').addEventListener('click', () => activateStudentStep(1));
+      document.getElementById('tabStep2').addEventListener('click', () => activateStudentStep(2));
+      document.getElementById('tabStep3').addEventListener('click', () => activateStudentStep(3));
+      document.getElementById('btnGoStep2').addEventListener('click', () => activateStudentStep(2));
+      document.getElementById('btnBackStep1').addEventListener('click', () => activateStudentStep(1));
+      document.getElementById('btnGoStep3').addEventListener('click', () => activateStudentStep(3));
+      document.getElementById('btnBackStep2').addEventListener('click', () => activateStudentStep(2));
+
+      document.getElementById('btnDownloadIGCard').addEventListener('click', generateIGCard);
+      document.getElementById('btnCloseIGModal').addEventListener('click', () => {
+        document.getElementById('modalIGPreview').classList.add('hidden');
+      });
+
+      document.getElementById('btnSubmitPortfolio').addEventListener('click', async () => {
+        const btn = document.getElementById('btnSubmitPortfolio');
+        state.submitted = true;
+        if (appsScriptUrl) {
+          btn.textContent = '⏳ กำลังส่งเข้า Google Sheet...';
+          btn.disabled = true;
+          try {
+            const payload = {
+              action: 'submitPortfolio',
+              roomCode: state.roomCode,
+              studentName: state.playerName,
+              track: PRESETS[state.presetKey].label,
+              m40_1: Number(document.getElementById('inc40_1').value) || 0,
+              m40_2: Number(document.getElementById('inc40_2').value) || 0,
+              m40_6: Number(document.getElementById('inc40_6').value) || 0,
+              m40_4: Number(document.getElementById('inc40_4').value) || 0,
+              m40_8: Number(document.getElementById('inc40_8').value) || 0,
+              mGift: state.mGift,
+              expLiving: state.mLivingExp,
+              expIns: state.mInsExp,
+              expRetire: state.mFundExp,
+              safe: state.alloc.emergency + state.alloc.bond,
+              thai: state.alloc.thaiStock + state.alloc.thaiFund + state.alloc.rmf + state.alloc.thaiEsg,
+              global: state.alloc.globalStock + state.alloc.globalFund + state.alloc.etf,
+              alt: state.alloc.gold + state.alloc.crypto + state.alloc.collect,
+              mTax: state.mTax,
+              mInvestable: state.mInvestable,
+              age60Nominal: state.age60Nominal,
+              age60Real: state.age60Real,
+              score: state.score
+            };
+            const res = await fetch(appsScriptUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data && !data.ok && data.error === 'ROOM_FULL') {
+              btn.textContent = `❌ ห้องเต็มแล้ว (${MAX_STUDENTS_PER_ROOM} คน)`;
+              btn.disabled = false;
+              return;
+            }
+          } catch (e) {}
+          btn.disabled = false;
+        }
+        renderInstructorDashboard();
+        btn.textContent = '✅ ส่งพอร์ตเข้าห้องเรียนแล้ว!';
+        setTimeout(() => { btn.textContent = '📤 ส่งพอร์ตเข้าห้องเรียน'; }, 2500);
+      });
+
+      document.querySelectorAll('.inc-input, .exp-input').forEach(el => {
+        el.addEventListener('input', computePortfolioFromInputs);
+        el.addEventListener('change', computePortfolioFromInputs);
+      });
+      document.querySelectorAll('.alloc-input, .sim-param').forEach(el => {
+        el.addEventListener('input', updateInvestmentProjection);
+        el.addEventListener('change', updateInvestmentProjection);
+      });
+
+      document.querySelectorAll('.info-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = INFO_CONTENT[btn.getAttribute('data-info')];
+          if (!item) return;
+          document.getElementById('infoModalTitle').textContent = item.title;
+          document.getElementById('infoModalBody').innerHTML = item.body;
+          document.getElementById('modalInfoBox').classList.remove('hidden');
+        });
+      });
+      document.getElementById('btnCloseInfoModal').addEventListener('click', () => {
+        document.getElementById('modalInfoBox').classList.add('hidden');
+      });
+
+      document.querySelectorAll('.host-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.host-tab-btn').forEach(b => {
+            b.className = 'host-tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition';
+          });
+          btn.className = 'host-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-400 text-slate-950 transition';
+          state.activeHostTab = btn.getAttribute('data-htab');
+          renderInstructorDashboard();
+        });
+      });
+
+      const INSTRUCTOR_PIN = '7263';
+      let instructorUnlocked = false;
+
+      function openPinPrompt() {
+        document.getElementById('inputInstructorPin').value = '';
+        document.getElementById('pinErrorMsg').classList.add('hidden');
+        document.getElementById('modalInstructorPin').classList.remove('hidden');
+        setTimeout(() => document.getElementById('inputInstructorPin').focus(), 50);
+      }
+
+      function verifyAndEnterHost() {
+        const entered = document.getElementById('inputInstructorPin').value.trim();
+        if (entered === INSTRUCTOR_PIN) {
+          instructorUnlocked = true;
+          document.getElementById('modalInstructorPin').classList.add('hidden');
+          if (!document.getElementById('viewLobby').classList.contains('hidden')) {
+            state.roomCode = (document.getElementById('inputRoomCode').value.trim() || 'DENT-2569').toUpperCase();
+            state.playerName = document.getElementById('inputPlayerName').value.trim() || 'ทพ. นภัส';
+            document.getElementById('stuHeaderName').textContent = state.playerName;
+            document.getElementById('roomCodeText').textContent = state.roomCode;
+            document.getElementById('roomBadge').classList.remove('hidden');
+            document.getElementById('roomBadge').classList.add('flex');
+          }
+          switchMainView('host');
+        } else {
+          document.getElementById('pinErrorMsg').classList.remove('hidden');
+          document.getElementById('inputInstructorPin').value = '';
+          document.getElementById('inputInstructorPin').focus();
+        }
+      }
+
+      document.getElementById('btnConfirmPin').addEventListener('click', verifyAndEnterHost);
+      document.getElementById('inputInstructorPin').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') verifyAndEnterHost();
+      });
+      document.getElementById('btnClosePinModal').addEventListener('click', () => {
+        document.getElementById('modalInstructorPin').classList.add('hidden');
+      });
+      document.getElementById('btnCancelPin').addEventListener('click', () => {
+        document.getElementById('modalInstructorPin').classList.add('hidden');
+      });
+
+      document.getElementById('btnSwitchModeTop').addEventListener('click', () => {
+        if (state.role === 'host') {
+          switchMainView('student');
+          return;
+        }
+        if (!instructorUnlocked) {
+          openPinPrompt();
+          return;
+        }
+        if (!document.getElementById('viewLobby').classList.contains('hidden')) {
+          state.role = 'host';
+          document.getElementById('btnEnterRoom').click();
+          return;
+        }
+        switchMainView('host');
+      });
+      document.getElementById('btnViewStudentFromHost').addEventListener('click', () => switchMainView('student'));
+      document.getElementById('btnHostSummaryView').addEventListener('click', () => {
+        state.activeHostTab = 'summary';
+        renderInstructorDashboard();
+      });
+
+      document.getElementById('btnHostPauseModal').addEventListener('click', () => {
+        document.getElementById('modalHostPause').classList.remove('hidden');
+      });
+      document.getElementById('btnInspPause').addEventListener('click', () => {
+        document.getElementById('modalHostPause').classList.remove('hidden');
+      });
+      document.getElementById('btnClosePauseModal').addEventListener('click', () => {
+        document.getElementById('modalHostPause').classList.add('hidden');
+      });
+      document.getElementById('btnResumeFromPause').addEventListener('click', () => {
+        document.getElementById('modalHostPause').classList.add('hidden');
+      });
+
+      document.getElementById('btnResetToLobby').addEventListener('click', () => {
+        state.role = 'student';
+        instructorUnlocked = false;
+        document.getElementById('instructorControlBar').classList.add('hidden');
+        document.getElementById('topSwitchLabel').textContent = 'จออาจารย์ (PC)';
+        document.getElementById('viewStudentPortfolio').classList.add('hidden');
+        document.getElementById('viewInstructorDashboard').classList.add('hidden');
+        document.getElementById('viewLobby').classList.remove('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
