@@ -6,6 +6,8 @@
   <title>Dentist Life Portfolio — ออกแบบพอร์ตชีวิต การเงิน ภาษี &amp; การลงทุนทันตแพทย์</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
@@ -825,6 +827,44 @@
     </div>
   </div>
 
+
+  <!-- MODAL: CLASSROOM QR CODE INVITE -->
+  <div id="modalRoomQR" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3">
+    <div class="max-w-sm w-full glass-card rounded-2xl p-5 border border-teal-400/50 shadow-2xl space-y-4 text-center">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <div class="flex items-center gap-2 text-left">
+          <span class="w-8 h-8 rounded-xl bg-teal-400/20 border border-teal-400/50 text-teal-300 flex items-center justify-center font-bold">📱</span>
+          <div>
+            <div class="text-[10px] font-bold text-teal-400 uppercase">SCAN TO JOIN CLASSROOM</div>
+            <h3 class="text-sm font-bold text-white">สแกน QR Code เพื่อเข้าห้องเรียน</h3>
+          </div>
+        </div>
+        <button id="btnCloseQRModal" type="button" class="px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white text-xs font-bold">✕</button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="inline-block px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-300 text-xs font-bold">
+          รหัสห้อง: <span id="qrRoomCodeLabel" class="tracking-wider">DENT-2569</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl w-fit mx-auto shadow-lg">
+          <div id="qrCodeRenderBox"></div>
+        </div>
+        <div id="qrLinkStatusBadge" class="text-[11px] font-medium text-emerald-300"></div>
+      </div>
+
+      <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800 text-[10px] text-slate-400 break-all max-h-16 overflow-y-auto" id="qrFullUrlText"></div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button id="btnCopyFromQRModal" type="button" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs font-bold border border-slate-700 transition">
+          📋 คัดลอกลิงก์
+        </button>
+        <button id="btnDoneQRModal" type="button" class="py-2 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 text-xs font-bold shadow transition">
+          ✓ ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // =========================================================================
     // INFO (i) DICTIONARY
@@ -1636,9 +1676,20 @@
             <th class="py-2 px-3">40(6)</th>
             <th class="py-2 px-3">40(4)+(8)</th>
             <th class="py-2 px-3">รวม/ด.</th>
+            <th class="py-2 px-3 text-rose-300">ภาษี</th>
           `;
           entries.forEach(st => {
             const tot = st.m40_1 + st.m40_2 + st.m40_6 + st.m40_4 + st.m40_8;
+            // Compute annual tax before extra deductions (personal allowance 60,000 THB only, matching Part 1)
+            const a1 = (st.m40_1 || 0) * 12;
+            const a2 = (st.m40_2 || 0) * 12;
+            const a6 = (st.m40_6 || 0) * 12;
+            const a4 = (st.m40_4 || 0) * 12;
+            const a8 = (st.m40_8 || 0) * 12;
+            const stdExp = Math.min((a1 + a2) * 0.5, 100000) + (a6 * 0.60) + (a8 * 0.60);
+            const taxableBefore = Math.max(0, (a1 + a2 + a6 + a8) - stdExp - 60000);
+            const annualTaxBefore = calcProgressiveTax(taxableBefore) + Math.round(a4 * 0.10);
+
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-slate-800/70 cursor-pointer';
             tr.innerHTML = `
@@ -1648,6 +1699,7 @@
               <td class="py-2.5 px-3 text-emerald-300">${fmtBaht(st.m40_6)}</td>
               <td class="py-2.5 px-3">${fmtBaht(st.m40_4 + st.m40_8)}</td>
               <td class="py-2.5 px-3 font-bold text-sky-300">${fmtBaht(tot)}</td>
+              <td class="py-2.5 px-3 font-bold text-rose-400">${fmtBaht(annualTaxBefore)}/ปี</td>
             `;
             tr.addEventListener('click', () => inspectStudent(st, tot));
             tbody.appendChild(tr);
@@ -1796,22 +1848,63 @@
         setTimeout(() => { btn.textContent = 'ตั้งรหัส'; }, 1800);
       });
 
-      document.getElementById('btnCopyRoomLink').addEventListener('click', () => {
-        const base = window.location.href.split('?')[0];
-        const shareUrl = `${base}?room=${encodeURIComponent(activeClassRoomCode)}${appsScriptUrl ? '&api=' + encodeURIComponent(appsScriptUrl) : ''}`;
-        const btn = document.getElementById('btnCopyRoomLink');
+      let latestShareUrl = '';
+
+      function copyTextToClipboard(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(shareUrl).catch(() => {});
+          navigator.clipboard.writeText(text).catch(() => {});
         } else {
           const ta = document.createElement('textarea');
-          ta.value = shareUrl;
+          ta.value = text;
           document.body.appendChild(ta);
           ta.select();
           try { document.execCommand('copy'); } catch (e) {}
           document.body.removeChild(ta);
         }
-        btn.textContent = '✓ คัดลอกลิงก์แล้ว';
-        setTimeout(() => { btn.textContent = '🔗 ลิงก์เข้าห้อง'; }, 2000);
+      }
+
+      document.getElementById('btnCopyRoomLink').addEventListener('click', () => {
+        const currentRoom = (document.getElementById('hostRoomInput').value.trim() || activeClassRoomCode || 'DENT-2569').toUpperCase();
+        activeClassRoomCode = currentRoom;
+        const base = window.location.href.split('?')[0];
+        latestShareUrl = `${base}?room=${encodeURIComponent(currentRoom)}${appsScriptUrl ? '&api=' + encodeURIComponent(appsScriptUrl) : ''}`;
+        copyTextToClipboard(latestShareUrl);
+
+        document.getElementById('qrRoomCodeLabel').textContent = currentRoom;
+        document.getElementById('qrFullUrlText').textContent = latestShareUrl;
+        document.getElementById('qrLinkStatusBadge').textContent = appsScriptUrl
+          ? '✅ ลิงก์นี้แนบ Google Sheet API เรียบร้อย (นิสิตสแกนแล้วส่งเข้าห้องทันที)'
+          : '⚠️ ยังไม่ได้เชื่อม Google Sheet URL (แนะนำให้กดปุ่ม "เชื่อม Google Sheet" ก่อน)';
+
+        const qrBox = document.getElementById('qrCodeRenderBox');
+        qrBox.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+          new QRCode(qrBox, {
+            text: latestShareUrl,
+            width: 210,
+            height: 210,
+            colorDark: '#0f172a',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        } else {
+          qrBox.innerHTML = '<div class="p-4 text-xs text-slate-800">ไม่สามารถโหลดตัวสร้าง QR ได้ กรุณาใช้ปุ่มคัดลอกลิงก์ด้านล่าง</div>';
+        }
+
+        document.getElementById('modalRoomQR').classList.remove('hidden');
+      });
+
+      document.getElementById('btnCopyFromQRModal').addEventListener('click', () => {
+        if (latestShareUrl) copyTextToClipboard(latestShareUrl);
+        const btn = document.getElementById('btnCopyFromQRModal');
+        btn.textContent = '✓ คัดลอกแล้ว!';
+        setTimeout(() => { btn.textContent = '📋 คัดลอกลิงก์'; }, 2000);
+      });
+      document.getElementById('btnCloseQRModal').addEventListener('click', () => {
+        document.getElementById('modalRoomQR').classList.add('hidden');
+      });
+      document.getElementById('btnDoneQRModal').addEventListener('click', () => {
+        document.getElementById('modalRoomQR').classList.add('hidden');
       });
 
       // Sheet Config Modal Listeners
